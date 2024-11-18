@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -34,6 +36,28 @@ class User
 
     #[ORM\Column]
     private ?bool $active = null;
+
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Campus $campus = null;
+
+    /**
+     * @var Collection<int, Sortie>
+     */
+    #[ORM\ManyToMany(targetEntity: Sortie::class, mappedBy: 'participants')]
+    private Collection $sorties;
+
+    /**
+     * @var Collection<int, Sortie>
+     */
+    #[ORM\OneToMany(targetEntity: Sortie::class, mappedBy: 'organisateur')]
+    private Collection $sortiesOrganisées;
+
+    public function __construct()
+    {
+        $this->sorties = new ArrayCollection();
+        $this->sortiesOrganisées = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -120,6 +144,75 @@ class User
     public function setActive(bool $active): static
     {
         $this->active = $active;
+
+        return $this;
+    }
+
+    public function getCampus(): ?Campus
+    {
+        return $this->campus;
+    }
+
+    public function setCampus(?Campus $campus): static
+    {
+        $this->campus = $campus;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Sortie>
+     */
+    public function getSorties(): Collection
+    {
+        return $this->sorties;
+    }
+
+    public function addSorty(Sortie $sorty): static
+    {
+        if (!$this->sorties->contains($sorty)) {
+            $this->sorties->add($sorty);
+            $sorty->addParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSorty(Sortie $sorty): static
+    {
+        if ($this->sorties->removeElement($sorty)) {
+            $sorty->removeParticipant($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Sortie>
+     */
+    public function getSortiesOrganisées(): Collection
+    {
+        return $this->sortiesOrganisées;
+    }
+
+    public function addSortiesOrganisE(Sortie $sortiesOrganisE): static
+    {
+        if (!$this->sortiesOrganisées->contains($sortiesOrganisE)) {
+            $this->sortiesOrganisées->add($sortiesOrganisE);
+            $sortiesOrganisE->setOrganisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSortiesOrganisE(Sortie $sortiesOrganisE): static
+    {
+        if ($this->sortiesOrganisées->removeElement($sortiesOrganisE)) {
+            // set the owning side to null (unless already changed)
+            if ($sortiesOrganisE->getOrganisateur() === $this) {
+                $sortiesOrganisE->setOrganisateur(null);
+            }
+        }
 
         return $this;
     }
