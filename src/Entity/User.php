@@ -6,6 +6,7 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -17,18 +18,47 @@ class User
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    #[Assert\NotBlank(message: 'Nom obligatoire')]
+    #[Assert\Length(
+        min: 3, minMessage: "Le nom doit faire au moins 3 caractères",
+        max: 180, maxMessage: "Le nom ne peut pas dépasser 180 caractères"
+    )]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 180)]
+    #[Assert\NotBlank(message: 'Prénom obligatoire')]
+    #[Assert\Length(
+        min: 3,
+        max: 180,
+        minMessage: "Le prénom doit faire au moins 3 caractères",
+        maxMessage: "Le prénom ne peut pas dépasser 180 caractères"
+    )]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 10)]
+    #[Assert\NotBlank(message: 'Numéro de téléphone obligatoire')]
+    #[Assert\Expression(expression: "(0|\\+33|0033)[1-9][0-9]{8}")]
+    #[Assert\Length(
+        min: 10,
+        max: 10,
+        minMessage: "Le numéro de téléphone n'est pas valide",
+        maxMessage: "Le numéro de téléphone n'est pas valide"
+    )]
     private ?string $telephone = null;
 
     #[ORM\Column(length: 180)]
+    #[Assert\NotBlank(message: 'Email obligatoire')]
+    #[Assert\Email(message: 'Email non valide')]
     private ?string $email = null;
 
     #[ORM\Column(length: 180)]
+    #[Assert\NotBlank(message: 'Mot de passe obligatoire')]
+    #[Assert\Length(
+        min: 8,
+        max: 180,
+        minMessage: "Votre mot de passe est trop court",
+        maxMessage: "Votre mot de passe est trop long :c"
+    )]
     private ?string $password = null;
 
     #[ORM\Column]
