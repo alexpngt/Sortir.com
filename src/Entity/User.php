@@ -20,8 +20,10 @@ class User
     #[ORM\Column(length: 180)]
     #[Assert\NotBlank(message: 'Nom obligatoire')]
     #[Assert\Length(
-        min: 3, minMessage: "Le nom doit faire au moins 3 caractères",
-        max: 180, maxMessage: "Le nom ne peut pas dépasser 180 caractères"
+        min: 3,
+        max: 180,
+        minMessage: "Le nom doit faire au moins 3 caractères",
+        maxMessage: "Le nom ne peut pas dépasser 180 caractères"
     )]
     private ?string $firstname = null;
 
@@ -81,12 +83,12 @@ class User
      * @var Collection<int, Sortie>
      */
     #[ORM\OneToMany(targetEntity: Sortie::class, mappedBy: 'organisateur')]
-    private Collection $sortiesOrganisées;
+    private Collection $sortiesOrganisees;
 
     public function __construct()
     {
         $this->sorties = new ArrayCollection();
-        $this->sortiesOrganisées = new ArrayCollection();
+        $this->sortiesOrganisees = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -198,20 +200,20 @@ class User
         return $this->sorties;
     }
 
-    public function addSorty(Sortie $sorty): static
+    public function addSortie(Sortie $sortie): static
     {
-        if (!$this->sorties->contains($sorty)) {
-            $this->sorties->add($sorty);
-            $sorty->addParticipant($this);
+        if (!$this->sorties->contains($sortie)) {
+            $this->sorties->add($sortie);
+            $sortie->addParticipant($this);
         }
 
         return $this;
     }
 
-    public function removeSorty(Sortie $sorty): static
+    public function removeSortie(Sortie $sortie): static
     {
-        if ($this->sorties->removeElement($sorty)) {
-            $sorty->removeParticipant($this);
+        if ($this->sorties->removeElement($sortie)) {
+            $sortie->removeParticipant($this);
         }
 
         return $this;
@@ -220,27 +222,27 @@ class User
     /**
      * @return Collection<int, Sortie>
      */
-    public function getSortiesOrganisées(): Collection
+    public function getSortiesOrganisees(): Collection
     {
-        return $this->sortiesOrganisées;
+        return $this->sortiesOrganisees;
     }
 
-    public function addSortiesOrganisE(Sortie $sortiesOrganisE): static
+    public function addSortiesOrganise(Sortie $sortiesOrganise): static
     {
-        if (!$this->sortiesOrganisées->contains($sortiesOrganisE)) {
-            $this->sortiesOrganisées->add($sortiesOrganisE);
-            $sortiesOrganisE->setOrganisateur($this);
+        if (!$this->sortiesOrganisees->contains($sortiesOrganise)) {
+            $this->sortiesOrganisees->add($sortiesOrganise);
+            $sortiesOrganise->setOrganisateur($this);
         }
 
         return $this;
     }
 
-    public function removeSortiesOrganisE(Sortie $sortiesOrganisE): static
+    public function removeSortiesOrganise(Sortie $sortiesOrganise): static
     {
-        if ($this->sortiesOrganisées->removeElement($sortiesOrganisE)) {
+        if ($this->sortiesOrganisees->removeElement($sortiesOrganise)) {
             // set the owning side to null (unless already changed)
-            if ($sortiesOrganisE->getOrganisateur() === $this) {
-                $sortiesOrganisE->setOrganisateur(null);
+            if ($sortiesOrganise->getOrganisateur() === $this) {
+                $sortiesOrganise->setOrganisateur(null);
             }
         }
 
