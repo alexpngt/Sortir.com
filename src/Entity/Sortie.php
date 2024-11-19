@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
 class Sortie
@@ -17,21 +18,29 @@ class Sortie
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    #[Assert\NotBlank(message: "Le nom est obligatoire")]
+    #[Assert\Length(
+        max: 180,
+        maxMessage: "Le nom de la sortie ne doit pas dépasser 180 caractères"
+    )]
     private ?string $name = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $dateStart = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: "Le durée est obligatoire")]
     private ?int $duration = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $dateLimitInscription = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
+    #[Assert\NotBlank(message: "Vous devez renseigner le nombre maximal de personnes pouvant participer à cette sortie")]
     private ?int $nbMaxInscription = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message: "Veuillez renseigner des informations concernant cette sortie")]
     private ?string $infosSortie = null;
 
     /**
@@ -40,11 +49,11 @@ class Sortie
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'sorties')]
     private Collection $participants;
 
-    #[ORM\ManyToOne(inversedBy: 'sortiesOrganisées')]
+    #[ORM\ManyToOne(inversedBy: 'sortiesOrganisees')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $organisateur = null;
 
-    #[ORM\ManyToOne(inversedBy: 'sortiesOrganisées')]
+    #[ORM\ManyToOne(inversedBy: 'sortiesOrganisees')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Campus $campusOrganisateur = null;
 

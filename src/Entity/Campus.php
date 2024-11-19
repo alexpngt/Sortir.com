@@ -6,8 +6,11 @@ use App\Repository\CampusRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CampusRepository::class)]
+#[UniqueEntity("name", message: "Ce campus existe déjà")]
 class Campus
 {
     #[ORM\Id]
@@ -16,6 +19,11 @@ class Campus
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    #[Assert\NotBlank(message: "Le nom du campus est obligatoire")]
+    #[Assert\Length(
+        max: 180,
+        maxMessage: "Le nom du campus ne peut pas dépasser 180 caractères"
+    )]
     private ?string $name = null;
 
     /**
@@ -28,12 +36,12 @@ class Campus
      * @var Collection<int, Sortie>
      */
     #[ORM\OneToMany(targetEntity: Sortie::class, mappedBy: 'campusOrganisateur')]
-    private Collection $sortiesOrganisées;
+    private Collection $sortiesOrganisees;
 
     public function __construct()
     {
         $this->users = new ArrayCollection();
-        $this->sortiesOrganisées = new ArrayCollection();
+        $this->sortiesOrganisees = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -86,27 +94,27 @@ class Campus
     /**
      * @return Collection<int, Sortie>
      */
-    public function getSortiesOrganisées(): Collection
+    public function getSortiesOrganisees(): Collection
     {
-        return $this->sortiesOrganisées;
+        return $this->sortiesOrganisees;
     }
 
-    public function addSortiesOrganisE(Sortie $sortiesOrganisE): static
+    public function addSortie(Sortie $sortie): static
     {
-        if (!$this->sortiesOrganisées->contains($sortiesOrganisE)) {
-            $this->sortiesOrganisées->add($sortiesOrganisE);
-            $sortiesOrganisE->setCampusOrganisateur($this);
+        if (!$this->sortiesOrganisees->contains($sortie)) {
+            $this->sortiesOrganisees->add($sortie);
+            $sortie->setCampusOrganisateur($this);
         }
 
         return $this;
     }
 
-    public function removeSortiesOrganisE(Sortie $sortiesOrganisE): static
+    public function removeSortie(Sortie $sortie): static
     {
-        if ($this->sortiesOrganisées->removeElement($sortiesOrganisE)) {
+        if ($this->sortiesOrganisees->removeElement($sortie)) {
             // set the owning side to null (unless already changed)
-            if ($sortiesOrganisE->getCampusOrganisateur() === $this) {
-                $sortiesOrganisE->setCampusOrganisateur(null);
+            if ($sortie->getCampusOrganisateur() === $this) {
+                $sortie->setCampusOrganisateur(null);
             }
         }
 

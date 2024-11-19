@@ -6,9 +6,12 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
+#[UniqueEntity(fields: ["email", "username", "telephone"], message: "Cet utilisateur existe déjà !")]
 class User
 {
     #[ORM\Id]
@@ -17,18 +20,50 @@ class User
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    #[Assert\NotBlank(message: 'Nom obligatoire')]
+    #[Assert\Length(
+        min: 3,
+        max: 180,
+        minMessage: "Le nom doit faire au moins 3 caractères",
+        maxMessage: "Le nom ne peut pas dépasser 180 caractères"
+    )]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 180)]
+    #[Assert\NotBlank(message: 'Prénom obligatoire')]
+    #[Assert\Length(
+        min: 3,
+        max: 180,
+        minMessage: "Le prénom doit faire au moins 3 caractères",
+        maxMessage: "Le prénom ne peut pas dépasser 180 caractères"
+    )]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 10)]
+    #[Assert\NotBlank(message: 'Numéro de téléphone obligatoire')]
+    #[Assert\Expression(expression: "(0|(\\+33)|(0033))[1-9][0-9]{8}")]
+    #[Assert\Length(
+        min: 10,
+        max: 10,
+        minMessage: "Le numéro de téléphone n'est pas valide",
+        maxMessage: "Le numéro de téléphone n'est pas valide"
+    )]
     private ?string $telephone = null;
 
     #[ORM\Column(length: 180)]
+    #[Assert\NotBlank(message: 'Email obligatoire')]
+    #[Assert\Email(message: 'Email non valide')]
+    #[Assert\Unique(message: "Une erreur s'est produite...")]
     private ?string $email = null;
 
     #[ORM\Column(length: 180)]
+    #[Assert\NotBlank(message: 'Mot de passe obligatoire')]
+    #[Assert\Length(
+        min: 8,
+        max: 180,
+        minMessage: "Votre mot de passe est trop court",
+        maxMessage: "Votre mot de passe est trop long :c"
+    )]
     private ?string $password = null;
 
     #[ORM\Column]
@@ -51,12 +86,22 @@ class User
      * @var Collection<int, Sortie>
      */
     #[ORM\OneToMany(targetEntity: Sortie::class, mappedBy: 'organisateur')]
-    private Collection $sortiesOrganisées;
+    private Collection $sortiesOrganisees;
+
+    #[ORM\Column(length: 180)]
+    #[Assert\NotBlank(message: 'Pseudo obligatoire')]
+    #[Assert\Length(
+        min: 3,
+        max: 180,
+        minMessage: "Pseudo trop court",
+        maxMessage: "Pseudo trop long",
+    )]
+    private ?string $username = null;
 
     public function __construct()
     {
         $this->sorties = new ArrayCollection();
-        $this->sortiesOrganisées = new ArrayCollection();
+        $this->sortiesOrganisees = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -168,20 +213,20 @@ class User
         return $this->sorties;
     }
 
-    public function addSorty(Sortie $sorty): static
+    public function addSortie(Sortie $sortie): static
     {
-        if (!$this->sorties->contains($sorty)) {
-            $this->sorties->add($sorty);
-            $sorty->addParticipant($this);
+        if (!$this->sorties->contains($sortie)) {
+            $this->sorties->add($sortie);
+            $sortie->addParticipant($this);
         }
 
         return $this;
     }
 
-    public function removeSorty(Sortie $sorty): static
+    public function removeSortie(Sortie $sortie): static
     {
-        if ($this->sorties->removeElement($sorty)) {
-            $sorty->removeParticipant($this);
+        if ($this->sorties->removeElement($sortie)) {
+            $sortie->removeParticipant($this);
         }
 
         return $this;
@@ -190,29 +235,41 @@ class User
     /**
      * @return Collection<int, Sortie>
      */
-    public function getSortiesOrganisées(): Collection
+    public function getSortiesOrganisees(): Collection
     {
-        return $this->sortiesOrganisées;
+        return $this->sortiesOrganisees;
     }
 
-    public function addSortiesOrganisE(Sortie $sortiesOrganisE): static
+    public function addSortieOrganisee(Sortie $sortieOrganisee): static
     {
-        if (!$this->sortiesOrganisées->contains($sortiesOrganisE)) {
-            $this->sortiesOrganisées->add($sortiesOrganisE);
-            $sortiesOrganisE->setOrganisateur($this);
+        if (!$this->sortiesOrganisees->contains($sortieOrganisee)) {
+            $this->sortiesOrganisees->add($sortieOrganisee);
+            $sortieOrganisee->setOrganisateur($this);
         }
 
         return $this;
     }
 
-    public function removeSortiesOrganisE(Sortie $sortiesOrganisE): static
+    public function removeSortiesOrganisee(Sortie $sortiesOrganisee): static
     {
-        if ($this->sortiesOrganisées->removeElement($sortiesOrganisE)) {
+        if ($this->sortiesOrganisees->removeElement($sortiesOrganisee)) {
             // set the owning side to null (unless already changed)
-            if ($sortiesOrganisE->getOrganisateur() === $this) {
-                $sortiesOrganisE->setOrganisateur(null);
+            if ($sortiesOrganisee->getOrganisateur() === $this) {
+                $sortiesOrganisee->setOrganisateur(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUsername(): ?string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(string $username): static
+    {
+        $this->username = $username;
 
         return $this;
     }
