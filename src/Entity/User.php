@@ -240,22 +240,22 @@ class User
         return $this->sortiesOrganisees;
     }
 
-    public function addSortiesOrganise(Sortie $sortiesOrganise): static
+    public function addSortieOrganisee(Sortie $sortieOrganisee): static
     {
-        if (!$this->sortiesOrganisees->contains($sortiesOrganise)) {
-            $this->sortiesOrganisees->add($sortiesOrganise);
-            $sortiesOrganise->setOrganisateur($this);
+        if (!$this->sortiesOrganisees->contains($sortieOrganisee)) {
+            $this->sortiesOrganisees->add($sortieOrganisee);
+            $sortieOrganisee->setOrganisateur($this);
         }
 
         return $this;
     }
 
-    public function removeSortiesOrganise(Sortie $sortiesOrganise): static
+    public function removeSortiesOrganisee(Sortie $sortiesOrganisee): static
     {
-        if ($this->sortiesOrganisees->removeElement($sortiesOrganise)) {
+        if ($this->sortiesOrganisees->removeElement($sortiesOrganisee)) {
             // set the owning side to null (unless already changed)
-            if ($sortiesOrganise->getOrganisateur() === $this) {
-                $sortiesOrganise->setOrganisateur(null);
+            if ($sortiesOrganisee->getOrganisateur() === $this) {
+                $sortiesOrganisee->setOrganisateur(null);
             }
         }
 

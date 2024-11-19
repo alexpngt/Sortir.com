@@ -6,9 +6,11 @@ use App\Repository\LieuRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: LieuRepository::class)]
+#[UniqueEntity(["nom", "rue"], message: "Ce lieu existe déjà")]
 class Lieu
 {
     #[ORM\Id]
@@ -27,11 +29,9 @@ class Lieu
     private ?string $rue = null;
 
     #[ORM\Column]
-    #[Assert\NotBlank(message: "La latitude est obligatoire")]
     private ?float $latitude = null;
 
     #[ORM\Column]
-    #[Assert\NotBlank(message: "La longitude est obligatoire")]
     private ?float $longitude = null;
 
     /**
