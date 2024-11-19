@@ -1,0 +1,34 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom d-flex flex-wrap justify-content-between">
+    <div class="container-fluid d-flex align-items-center">
+        <a class="navbar-brand d-flex align-items-center" href="/">
+            <img src="{{ asset('img/logo.png') }}" alt="Sortir.com logo" class="object-fit-cover" width="75" height="50">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                {# Todo: Ville et Campus devront être visibles uniquement par les admins #}
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Ville</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Campus</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('main_home') }}">Accueil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Mon profil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Se déconnecter</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="d-flex flex-column pe-5 ms-auto">
+        <span>Date du jour : {{ "now"|date('d/m/Y') }}</span>
+        <span>Participant : {{ app.user ? app.user.firstname ~ ' ' ~ app.user.lastname : 'Invité' }}</span>
+    </div>
+</nav>
