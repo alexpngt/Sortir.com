@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity(fields: ["email", "username", "telephone"], message: "Cet utilisateur existe déjà !")]
-class User
+class User implements \Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -197,6 +197,7 @@ class User
     {
         return $this->campus;
     }
+
 
     public function setCampus(?Campus $campus): static
     {

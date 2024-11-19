@@ -32,6 +32,7 @@ class Campus
     #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'campus')]
     private Collection $users;
 
+    
     /**
      * @var Collection<int, Sortie>
      */
