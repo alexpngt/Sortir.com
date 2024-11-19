@@ -6,10 +6,12 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
+#[UniqueEntity(fields: ["email", "username", "telephone"], message: "Cet utilisateur existe déjà !")]
 class User
 {
     #[ORM\Id]
@@ -39,7 +41,7 @@ class User
 
     #[ORM\Column(length: 10)]
     #[Assert\NotBlank(message: 'Numéro de téléphone obligatoire')]
-    #[Assert\Expression(expression: "(0|\\+33|0033)[1-9][0-9]{8}")]
+    #[Assert\Expression(expression: "(0|(\\+33)|(0033))[1-9][0-9]{8}")]
     #[Assert\Length(
         min: 10,
         max: 10,
@@ -51,6 +53,7 @@ class User
     #[ORM\Column(length: 180)]
     #[Assert\NotBlank(message: 'Email obligatoire')]
     #[Assert\Email(message: 'Email non valide')]
+    #[Assert\Unique(message: "Une erreur s'est produite...")]
     private ?string $email = null;
 
     #[ORM\Column(length: 180)]
@@ -84,6 +87,16 @@ class User
      */
     #[ORM\OneToMany(targetEntity: Sortie::class, mappedBy: 'organisateur')]
     private Collection $sortiesOrganisees;
+
+    #[ORM\Column(length: 180)]
+    #[Assert\NotBlank(message: 'Pseudo obligatoire')]
+    #[Assert\Length(
+        min: 3,
+        max: 180,
+        minMessage: "Pseudo trop court",
+        maxMessage: "Pseudo trop long",
+    )]
+    private ?string $username = null;
 
     public function __construct()
     {
@@ -245,6 +258,18 @@ class User
                 $sortiesOrganise->setOrganisateur(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUsername(): ?string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(string $username): static
+    {
+        $this->username = $username;
 
         return $this;
     }
