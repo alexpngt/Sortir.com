@@ -1,7 +1,26 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Coucou valide !</h1>
+    <div class="container mt-4">
+        <h1>Filtrer les sorties</h1>
+
+        {{ form_start(form, {'method': 'GET'}) }}
+        <div class="row g-3">
+            <div class="col-md-3">{{ form_row(form.campusOrganisateur) }}</div>
+            <div class="col-md-3">{{ form_row(form.search) }}</div>
+            <div class="col-md-3">{{ form_row(form.date_start) }}</div>
+            <div class="col-md-3">{{ form_row(form.date_end) }}</div>
+        </div>
+        <div class="row g-3 mt-2">
+            <div class="col-md-3">{{ form_row(form.organisateur) }}</div>
+            <div class="col-md-3">{{ form_row(form.inscrit) }}</div>
+            <div class="col-md-3">{{ form_row(form.non_inscrit) }}</div>
+            <div class="col-md-3">{{ form_row(form.passees) }}</div>
+        </div>
+        <div class="mt-3 text-end">
+            <button class="btn btn-primary" type="submit">Rechercher</button>
+        </div>
+        {{ form_end(form) }}
 {% endblock %}
 
 {% block title %}Sortir.com | Accueil{% endblock %}
