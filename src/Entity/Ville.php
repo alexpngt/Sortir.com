@@ -34,8 +34,8 @@ class Ville
         minMessage: "Le code postal est trop court",
         maxMessage: "Le code postal est trop long"
     )]
-    #[Assert\Expression(
-        expression: "/^(?:0[1-9]|[1-8]\d|9[0-8])\d{3}$/)",
+    #[Assert\Regex(
+        pattern: "/\d{2}\d{3}/",
         message: "code postal non valide"
     )]
     private ?string $codePostal = null;

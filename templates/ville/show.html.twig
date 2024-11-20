@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gérer les villes | {{ parent() }}{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/table.css') }}">
+{% endblock %}
+
+{% block body %}
+    <h1 class="row justify-content-center">Gérer les villes</h1>
+
+    <!-- Formulaire pour filtrer -->
+    <div>
+        <p class="text-center">ICI UN FORMULAIRE DE FILTRE</p>
+    </div>
+    <!-- Tableau avec les campus -->
+    <div class="row col-6 table-container">
+        <table class="table text-center align-middle container">
+            <tr class="justify-content-center">
+                <th scope="col">Campus</th>
+                <th scope="col">Code postal</th>
+                <th scope="col">Actions</th>
+            </tr>
+            <!-- Une ligne par campus -->
+            {% for ville in villes %}
+                <tr>
+                    <td>{{ ville.nom|upper }}</td>
+                    <td>{{ ville.codePostal }}</td>
+                    <td>
+                        <a class="btn btn-warning btn-sm"
+                           href="{{ path('ville_edit', {id: ville.id}) }}">Modifier</a>
+                        <a class="btn btn-danger btn-sm"
+                           href="{{ path('ville_delete',
+                               {id: ville.id, token: csrf_token('delete'~ville.id)}) }}">Supprimer</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            <!-- Dernière ligne : Formulaire d'ajout -->
+            {{ form_start(villeForm) }}
+            <tr>
+                <td>{{ form_widget(villeForm.nom) }}</td>
+                <td>{{ form_widget(villeForm.codePostal) }}</td>
+                <td>
+                    <button class="btn btn-primary btn-sm" type="submit">Ajouter</button>
+                </td>
+            </tr>
+            {{ form_end(villeForm) }}
+        </table>
+    </div>
+{% endblock %}

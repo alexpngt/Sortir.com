@@ -10,10 +10,10 @@
             <ul class="navbar-nav ms-auto">
                 {# Todo: Ville et Campus devront être visibles uniquement par les admins #}
                 <li class="nav-item">
-                    <a class="nav-link" href="/">Ville</a>
+                    <a class="nav-link" href="{{ path('ville_show') }}">Ville</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/">Campus</a>
+                    <a class="nav-link" href="{{ path('campus_show') }}">Campus</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('main_home') }}">Accueil</a>
@@ -29,6 +29,9 @@
     </div>
     <div class="d-flex flex-column pe-5 ms-auto">
         <span>Date du jour : {{ "now"|date('d/m/Y') }}</span>
-        <span>Participant : {{ app.user ? app.user.firstname ~ ' ' ~ app.user.lastname : 'Invité' }}</span>
+        <!-- If temporaire -->
+        {% if app.user %}
+            <span>Participant : {{ app.user ? app.user.firstname ~ ' ' ~ app.user.lastname : 'Invité' }}</span>
+        {% endif %}
     </div>
 </nav>
