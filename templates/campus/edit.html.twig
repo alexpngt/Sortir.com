@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gérer les campus | {{ parent() }}{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/table.css') }}">
+{% endblock %}
+
+{% block body %}
+    <h1 class="row justify-content-center">Gérer les campus</h1>
+
+    <!-- Formulaire pour filtrer -->
+    <div>
+        <p class="text-center">ICI UN FORMULAIRE DE FILTRE</p>
+    </div>
+    <!-- Tableau avec les campus -->
+    <div class="row col-6 table-container">
+        <table class="table text-center align-middle container">
+            <tr class="justify-content-center">
+                <th class="" scope="col">Campus</th>
+                <th class="" scope="col">Actions</th>
+            </tr>
+            <!-- Une ligne par campus -->
+            {% for campus in campusLst %}
+                <tr>
+                    {% if campus.id is same as(campusToEdit.id) %}
+                        {{ form_start(formCampus) }}
+                        <td>{{ form_widget(formCampus) }}</td>
+                        <td>
+                            <button class="btn btn-primary btn-sm">Enregistrer</button>
+                        </td>
+                        {{ form_end(formCampus) }}
+                    {% else %}
+                        <td>{{ campus.name|upper }}</td>
+                        <td>
+                            <a class="btn btn-warning btn-sm" href="{{ path('campus_edit', {id: campus.id}) }}">Modifier</a>
+                            <a class="btn btn-danger btn-sm" href="{{ path('campus_delete', {id: campus.id}) }}">Supprimer</a>
+                        </td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}
