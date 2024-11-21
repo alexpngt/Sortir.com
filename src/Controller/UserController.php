@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserForm;
+use App\Form\UserType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/user')]
+#[Route('/participant')]
 final class UserController extends AbstractController
 {
 
@@ -27,7 +28,7 @@ final class UserController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            return $this->redirectToRoute('main_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('main_home', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('user/new.html.twig', [
@@ -39,12 +40,12 @@ final class UserController extends AbstractController
     #[Route('/{id}', name: 'user_show', methods: ['GET'])]
     public function show(User $user): Response
     {
-        return $this->render('user/show.html.twig', [
+        return $this->render('user/profil.html.twig', [
             'user' => $user,
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'user_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: '', methods: ['GET', 'POST'])]
     public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(UserType::class, $user);
@@ -73,8 +74,8 @@ final class UserController extends AbstractController
         return $this->redirectToRoute('main_home', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/participant/{id}', name: 'user_profil', methods: ['GET', 'POST'])]
-    public function showProfil(int $id,Request $request, UserRepository $userRepository, EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordHasher): Response
+    #[Route('/edit/{id}', name: 'user_edit', methods: ['GET', 'POST'])]
+    public function editProfil(int $id,Request $request, UserRepository $userRepository, EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordHasher): Response
     {
         $user = $userRepository->find($id); // Récup° du user via son id
 
@@ -99,7 +100,7 @@ final class UserController extends AbstractController
             $this->addFlash('success', 'Votre profil a été mis à jour.');
 
             // Rediriger vers la même page pour éviter la resoumission
-            return $this->redirectToRoute('user_profil', ['id' => $id]);
+            return $this->redirectToRoute('user_edit', ['id' => $id]);
         }
 
         // Renvoyer le formulaire à twig
