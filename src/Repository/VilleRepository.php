@@ -40,4 +40,15 @@ class VilleRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function findByFilters(mixed $filters)
+    {
+        $qb = $this->createQueryBuilder('v');
+
+        if (!empty($filters['search'])) {
+            $qb->andWhere('v.nom LIKE :search')
+                ->setParameter('search', '%'.$filters['search'].'%');
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }
