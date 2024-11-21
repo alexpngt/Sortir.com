@@ -41,7 +41,8 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         $admin->setFirstname('Admin');
         $admin->setLastname('Admin');
         $admin->setUsername('Admin');
-        $admin->setTelephone($faker->numerify('06 ## ## ## ##'));
+
+        $admin->setTelephone(str_replace(' ', '', $faker->numerify('06 ## ## ## ##')));
         $admin->setEmail('admin@eni.fr');
         $admin->setPassword($this->userPasswordHasher->hashPassword($admin, 'admin'));
         $admin->setAdmin(true);
@@ -60,9 +61,11 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             $user->setFirstname($faker->firstName());
             $user->setLastname($faker->lastName());
             $user->setUsername($faker->userName());
-            $user->setTelephone($faker->numerify('06 ## ## ## ##'));
+
+            $user->setTelephone(str_replace(' ', '', $faker->numerify('06 ## ## ## ##')));
             $user->setEmail("user$i@eni.fr");
             $user->setPassword($this->userPasswordHasher->hashPassword($user, '123456'));
+
             $user->setAdmin(false); // Les utilisateurs standards ne sont pas admin
             $user->setActive($faker->boolean(90)); // 90% de chances d'être actif
 

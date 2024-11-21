@@ -1,5 +1,8 @@
-.table-container {
-    margin: 2vw;
-    height: 60vh;
-    overflow-y: auto;
+
+.profile-photo {
+    width: 150px;
+    height: 150px;
+    margin-top: 0; /* Ajuste la hauteur pour correspondre au formulaire */
+    margin-right: 20px; /* Espace entre la photo et le formulaire */
+    align-self: flex-start; /* Assure que la photo commence au même niveau que le formulaire */
 }
