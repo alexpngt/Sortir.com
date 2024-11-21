@@ -7,12 +7,18 @@
 {% endblock %}
 
 {% block body %}
-    <h1 class="row justify-content-center">Gérer les villes</h1>
+    <h1 class="text-center">Gérer les villes</h1>
 
     <!-- Formulaire pour filtrer -->
-    <div>
-        <p class="text-center">ICI UN FORMULAIRE DE FILTRE</p>
+    {{ form_start(filterForm) }}
+    <div class="mx-3">
+        <h2 class="col">Filtrer les villes</h2>
+        <div class="d-flex gap-2 col-3">
+            {{ form_widget(filterForm.search) }}
+            <button type="submit"  class="btn btn-primary btn-sm">Rechercher</button>
+        </div>
     </div>
+    {{ form_end(filterForm) }}
     <!-- Tableau avec les campus -->
     <div class="row col-6 table-container">
         <table class="table text-center align-middle container">

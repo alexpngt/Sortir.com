@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Ville;
+use App\Form\NameFilterType;
 use App\Form\VilleType;
 use App\Repository\VilleRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,8 +21,15 @@ class VilleController extends AbstractController
         EntityManagerInterface $em,
         VilleRepository $villeRepository): Response
     {
+        // Créer le formulaire de filtres
+        $filterForm = $this->createForm(NameFilterType::class);
+        $filterForm->handleRequest($request);
+
+        //Appliquer les filtres si le formulmaire est soumis
+        $filters = $filterForm->isSubmitted() && $filterForm->isValid() ? $filterForm->getData() : [];
+
         // Récupération des villes en BDD
-        $villes = $villeRepository->findBy([], ['nom' => 'ASC']);
+        $villes = $villeRepository->findByFilters($filters);
 
         // Traitement du formulaire d'ajout
         $ville = new Ville();
@@ -41,6 +49,7 @@ class VilleController extends AbstractController
         return $this->render('ville/show.html.twig', [
             'villes' => $villes,
             'villeForm' => $villeForm,
+            "filterForm" => $filterForm,
         ]);
     }
 

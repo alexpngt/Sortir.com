@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Campus;
 use App\Form\CampusType;
-use App\Form\SearchNameType;
+use App\Form\NameFilterType;
 use App\Repository\CampusRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,8 +22,15 @@ class CampusController extends AbstractController
         CampusRepository $campusRepository
     ): Response
     {
+        // Créer le formulaire de filtres
+        $filterForm = $this->createForm(NameFilterType::class);
+        $filterForm->handleRequest($request);
+
+        //Appliquer les filtres si le formulmaire est soumis
+        $filters = $filterForm->isSubmitted() && $filterForm->isValid() ? $filterForm->getData() : [];
+
         // Récupération des campus en BDD
-        $campusLst = $campusRepository->findBy([], ['name' => 'ASC']);
+        $campusLst = $campusRepository->findByFilters($filters);
 
         // Traitement du formulaire d'ajout (Dernière ligne de la table sur la vue)
         $campus = new Campus();
@@ -43,6 +50,7 @@ class CampusController extends AbstractController
         return $this->render('campus/show.html.twig', [
             "campusLst" => $campusLst,
             "formCampus" => $formCampus,
+            "filterForm" => $filterForm,
         ]);
     }
 

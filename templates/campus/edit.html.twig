@@ -7,12 +7,8 @@
 {% endblock %}
 
 {% block body %}
-    <h1 class="row justify-content-center">Gérer les campus</h1>
+    <h1 class="text-center">Gérer les campus</h1>
 
-    <!-- Formulaire pour filtrer -->
-    <div>
-        <p class="text-center">ICI UN FORMULAIRE DE FILTRE</p>
-    </div>
     <!-- Tableau avec les campus -->
     <div class="row col-6 table-container">
         <table class="table text-center align-middle container">
@@ -34,7 +30,8 @@
                         <td>{{ campus.name|upper }}</td>
                         <td>
                             <a class="btn btn-warning btn-sm" href="{{ path('campus_edit', {id: campus.id}) }}">Modifier</a>
-                            <a class="btn btn-danger btn-sm" href="{{ path('campus_delete', {id: campus.id}) }}">Supprimer</a>
+                            <a class="btn btn-danger btn-sm"
+                               href="{{ path('campus_delete', {id: campus.id, token: csrf_token('delete'~campus.id)}) }}">Supprimer</a>
                         </td>
                     {% endif %}
                 </tr>
