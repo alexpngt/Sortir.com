@@ -2,40 +2,52 @@
 
 {% block title %}Gérer les campus | {{ parent() }}{% endblock %}
 
-{% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('css/table.css') }}">
-{% endblock %}
-
 {% block body %}
     <h1 class="text-center">Gérer les campus</h1>
 
-    <!-- Tableau avec les campus -->
-    <div class="row col-6 table-container">
-        <table class="table text-center align-middle container">
-            <tr class="justify-content-center">
-                <th class="" scope="col">Campus</th>
-                <th class="" scope="col">Actions</th>
-            </tr>
-            <!-- Une ligne par campus -->
-            {% for campus in campusLst %}
-                <tr>
-                    {% if campus.id is same as(campusToEdit.id) %}
-                        {{ form_start(formCampus) }}
-                        <td>{{ form_widget(formCampus) }}</td>
-                        <td>
-                            <button class="btn btn-primary btn-sm">Enregistrer</button>
-                        </td>
-                        {{ form_end(formCampus) }}
-                    {% else %}
-                        <td>{{ campus.name|upper }}</td>
-                        <td>
-                            <a class="btn btn-warning btn-sm" href="{{ path('campus_edit', {id: campus.id}) }}">Modifier</a>
-                            <a class="btn btn-danger btn-sm"
-                               href="{{ path('campus_delete', {id: campus.id, token: csrf_token('delete'~campus.id)}) }}">Supprimer</a>
-                        </td>
-                    {% endif %}
+    <div class="d-flex">
+
+        <!-- Tableau avec les campus -->
+        <div class="col-6 table-container">
+            <table class="table text-center align-middle container">
+                <tr class="justify-content-center sticky-top">
+                    <th scope="col">Campus</th>
+                    <th scope="col">Actions</th>
                 </tr>
-            {% endfor %}
-        </table>
+                <!-- Une ligne par campus -->
+                <tbody class="table-scrollable">
+                {% for campus in campusLst %}
+                    {% if not campus.id is same as(campusToEdit.id) %}
+                        <tr>
+                            <td>{{ campus.name|upper }}</td>
+                            <td>
+                                <a class="btn btn-warning btn-sm"
+                                   href="{{ path('campus_edit', {id: campus.id}) }}">Modifier</a>
+                                <a class="btn btn-danger btn-sm"
+                                   href="{{ path('campus_delete', {id: campus.id, token: csrf_token('delete'~campus.id)}) }}">Supprimer</a>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!-- formulaire de modification -->
+        <div class="col-5 container g-4">
+            <div class="row">
+                <h3 class="text-center">Modifier un campus :</h3>
+            </div>
+            {{ form_start(formCampus) }}
+            <div class="d-flex justify-content-center gap-2">
+                <div class="col-md-6 text-center">
+                    {{ form_row(formCampus.name) }}
+                </div>
+            </div>
+            <div class="d-flex justify-content-center">
+                <button class="col-3 g-3 mt-2 btn btn-primary btn-sm" type="submit">Enregistrer</button>
+            </div>
+            {{ form_end(formCampus) }}
+        </div>
+
     </div>
 {% endblock %}

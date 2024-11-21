@@ -1,3 +1,5 @@
-body {
-    background-color: skyblue;
+.table-container {
+    margin: 2vw;
+    height: 60vh;
+    overflow-y: auto;
 }
