@@ -1,5 +1,8 @@
 .table-container {
     margin: 2vw;
     height: 60vh;
+}
+
+.table-scrollable {
     overflow-y: auto;
 }
