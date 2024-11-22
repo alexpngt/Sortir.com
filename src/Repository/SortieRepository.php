@@ -17,7 +17,7 @@ class SortieRepository extends ServiceEntityRepository
         parent::__construct($registry, Sortie::class);
     }
 
-    public function findByFilters(array $filters, ?User $user)
+    public function findByFilters(array $filters, ?User $user): \Doctrine\ORM\Query
     {
         $qb = $this->createQueryBuilder('s')
             ->leftJoin('s.campusOrganisateur', 'c')
@@ -65,17 +65,6 @@ class SortieRepository extends ServiceEntityRepository
                 ->setParameter('etatPasse', 'Passée');
         }
 
-        return $qb->getQuery()->getResult();
-    }
-
-    public function findAllSorties():array
-    {
-        return $this->createQueryBuilder('s')
-            ->leftJoin('s.organisateur', 'o')
-            ->leftJoin('s.etat', 'e')
-            ->addSelect('o', 'e')
-            ->orderBy('s.dateStart', 'ASC')
-            ->getQuery()
-            ->getResult();
+        return $qb->orderBy('s.dateStart', 'ASC')->getQuery();
     }
 }

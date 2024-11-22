@@ -4,7 +4,7 @@
     <div class="container mt-4">
         <h1>Filtrer les sorties</h1>
 
-        {{ form_start(form, {'attr': {'data-turbo': 'false'}}) }}
+        {{ form_start(form) }}
         <div class="row g-3">
             <div class="col-md-3">{{ form_row(form.campusOrganisateur) }}</div>
             <div class="col-md-3">{{ form_row(form.search) }}</div>
@@ -24,9 +24,9 @@
     </div>
     <div class="container">
         <h2>Liste des sorties</h2>
-        <div class="table-responsive">
+        <div class="container-table">
             <table class="table table-striped">
-                <thead class="sticky-top">
+                <thead>
                 <tr>
                     <th>Nom de la sortie</th>
                     <th>Date de la sortie</th>
@@ -71,8 +71,15 @@
                 {% endfor %}
                 </tbody>
             </table>
+            {{ knp_pagination_render(sorties) }}
         </div>
     </div>
 {% endblock %}
 
-{% block title %}Sortir.com | Accueil{% endblock %}
+{% block title %}{{ parent() }} | Accueil{% endblock %}
+
+{% block footer %}
+    <footer class="mt-5">
+        <p class="text-center">{{ "now"|date("Y")}} - ENI Sortir.com</p>
+    </footer>
+{% endblock %}
