@@ -5,3 +5,12 @@
     margin-right: 20px; /* Espace entre la photo et le formulaire */
     align-self: flex-start; /* Assure que la photo commence au même niveau que le formulaire */
 }
+
+/* Tableau page main */
+.table-responsive {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    padding: 0 0.5rem 0.5rem 0.5rem;
+}

@@ -219,4 +219,9 @@ class Sortie
         return $this;
     }
 
+    public function isUserRegistered(User $user): bool
+    {
+        return $this->participants->contains($user);
+    }
+
 }
