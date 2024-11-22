@@ -22,25 +22,26 @@ class SortieRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('s')
             ->leftJoin('s.campusOrganisateur', 'c')
             ->leftJoin('s.participants', 'p')
-            ->addSelect('c', 'p');
+            ->leftJoin('s.etat', 'e')
+            ->addSelect('c', 'p', 'e');
 
-        if (!empty($filters['campus'])) {
+        if (!empty($filters['campusOrganisateur'])) {
             $qb->andWhere('c.id = :campus')
-                ->setParameter('campus', $filters['campus']->getId());
+                ->setParameter('campus', $filters['campusOrganisateur']->getId());
         }
 
         if (!empty($filters['search'])) {
-            $qb->andWhere('s.nom LIKE :search')
+            $qb->andWhere('s.name LIKE :search')
                 ->setParameter('search', '%' . $filters['search'] . '%');
         }
 
         if (!empty($filters['date_start'])) {
-            $qb->andWhere('s.dateHeureDebut >= :date_start')
+            $qb->andWhere('s.dateStart >= :date_start')
                 ->setParameter('date_start', $filters['date_start']);
         }
 
         if (!empty($filters['date_end'])) {
-            $qb->andWhere('s.dateHeureDebut <= :date_end')
+            $qb->andWhere('s.dateLimitInscription <= :date_end')
                 ->setParameter('date_end', $filters['date_end']);
         }
 
@@ -60,35 +61,21 @@ class SortieRepository extends ServiceEntityRepository
         }
 
         if (!empty($filters['passees'])) {
-            $qb->andWhere('s.dateHeureDebut < :now')
-                ->setParameter('now', new \DateTime());
+            $qb->andWhere('e.libelle = :etatPasse')
+                ->setParameter('etatPasse', 'Passée');
         }
 
         return $qb->getQuery()->getResult();
     }
 
-    //    /**
-    //     * @return Sortie[] Returns an array of Sortie objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('s.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Sortie
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function findAllSorties():array
+    {
+        return $this->createQueryBuilder('s')
+            ->leftJoin('s.organisateur', 'o')
+            ->leftJoin('s.etat', 'e')
+            ->addSelect('o', 'e')
+            ->orderBy('s.dateStart', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
