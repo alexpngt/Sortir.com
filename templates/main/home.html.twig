@@ -50,7 +50,9 @@
                         {# TODO: Ajouter le TD inscription ou non une fois l'auth mise en place #}
                         {# <td>{{ sortie.isUserRegistered(app.user) ? "X" : "" }}</td> #}
                         {# TODO: Changer le href par la route vers les profils une fois existante #}
-                        <td><a href="/" title="" class="text-decoration-none">{{ sortie.organisateur.firstname }} {{ sortie.organisateur.lastname }}</a></td>
+                        <td><a href="{{ path('user_show', {'id': sortie.organisateur.id}) }}" title="" class="text-decoration-none">
+                                {{ sortie.organisateur.firstname }} {{ sortie.organisateur.lastname }}
+                            </a></td>
                         <td>
                             {% if sortie.etat.libelle == 'Ouvert' and not sortie.isUserRegistered(app.user) %}
                                 <a href="#" class="btn btn-primary btn-sm">S'inscrire</a>

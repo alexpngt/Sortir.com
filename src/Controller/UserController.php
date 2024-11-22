@@ -38,10 +38,10 @@ final class UserController extends AbstractController
     }
 
     // affiche la page d'un participant depuis un autre participant ..
-    #[Route('/{id}', name: 'user_show', methods: ['GET'])]
+    #[Route('/show/{id}', name: 'user_show', methods: ['GET'])]
     public function show(User $user): Response
     {
-        return $this->render('user/profil.html.twig', [
+        return $this->render('user/show.html.twig', [
             'user' => $user,
         ]);
     }
