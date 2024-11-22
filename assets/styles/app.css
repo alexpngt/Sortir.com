@@ -5,3 +5,16 @@
     margin-right: 20px; /* Espace entre la photo et le formulaire */
     align-self: flex-start; /* Assure que la photo commence au même niveau que le formulaire */
 }
+
+
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+.alert-danger {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
