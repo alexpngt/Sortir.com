@@ -39,9 +39,13 @@ class User implements \Symfony\Component\Security\Core\User\PasswordAuthenticate
     )]
     private ?string $lastname = null;
 
-    #[ORM\Column(length: 10)]
+
+    #[ORM\Column(length: 15)]
     #[Assert\NotBlank(message: 'Numéro de téléphone obligatoire')]
-    #[Assert\Expression(expression: "(0|(\\+33)|(0033))[1-9][0-9]{8}")]
+    #[Assert\Regex(
+        pattern: '/^(0|\+33|0033)[1-9][0-9]{8}$/',
+        message: 'Veuillez entrer un numéro de téléphone français valide.'
+    )]
     #[Assert\Length(
         min: 10,
         max: 10,
@@ -97,6 +101,9 @@ class User implements \Symfony\Component\Security\Core\User\PasswordAuthenticate
         maxMessage: "Pseudo trop long",
     )]
     private ?string $username = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $photo = null;
 
     public function __construct()
     {
@@ -273,5 +280,21 @@ class User implements \Symfony\Component\Security\Core\User\PasswordAuthenticate
         $this->username = $username;
 
         return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(?string $photo): static
+    {
+        $this->photo = $photo;
+
+        return $this;
+    }
+    public function getFilename(): ?string
+    {
+        return $this->photo; // Retourne la propriété `photo`
     }
 }

@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Profil{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <!-- Titre -->
+        <h1 class="text-center mb-4">Mon Profil</h1>
+
+        <!-- Contenu aligné photo et formulaire -->
+        <div class="row">
+            <!-- Colonne photo -->
+            <div class="col-md-3 d-flex">
+                <div class="mt-0">
+                    {% if user.photo %}
+                        <img src="{{ asset('uploads/profil/' ~ user.photo) }}" alt="Photo de profil" class="img-fluid rounded-circle profile-photo">
+                    {% else %}
+                        <img src="{{ asset('img/default-avatar.png') }}" alt="Avatar par défaut" class="img-fluid rounded-circle profile-photo">
+                    {% endif %}
+                </div>
+            </div>
+            <!-- Colonne formulaire -->
+            <div class="col-md-6">
+                {{ form_start(form) }}
+                <div class="form-group row mb-3">
+                    {{ form_label(form.username, 'Pseudo :', {'label_attr': {'class': 'col-sm-4 col-form-label text-left'}}) }}
+                    <div class="col-sm-8">
+                        {{ form_widget(form.username, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
+                <div class="form-group row mb-3">
+                    {{ form_label(form.firstname, 'Prénom :', {'label_attr': {'class': 'col-sm-4 col-form-label text-left'}}) }}
+                    <div class="col-sm-8">
+                        {{ form_widget(form.firstname, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
+                <div class="form-group row mb-3">
+                    {{ form_label(form.lastname, 'Nom :', {'label_attr': {'class': 'col-sm-4 col-form-label text-left'}}) }}
+                    <div class="col-sm-8">
+                        {{ form_widget(form.lastname, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
+                <div class="form-group row mb-3">
+                    {{ form_label(form.telephone, 'Téléphone :', {'label_attr': {'class': 'col-sm-4 col-form-label text-left'}}) }}
+                    <div class="col-sm-8">
+                        {{ form_widget(form.telephone, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
+                <div class="form-group row mb-3">
+                    {{ form_label(form.email, 'Email :', {'label_attr': {'class': 'col-sm-4 col-form-label text-left'}}) }}
+                    <div class="col-sm-8">
+                        {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
+                <div class="form-group row mb-3">
+                    {{ form_label(form.password, 'Mot de passe :', {'label_attr': {'class': 'col-sm-4 col-form-label text-left'}}) }}
+                    <div class="col-sm-8">
+                        {{ form_widget(form.password, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
+                <div class="form-group row mb-3">
+                    {{ form_label(form.confirm_password, 'Confirmation :', {'label_attr': {'class': 'col-sm-4 col-form-label text-left'}}) }}
+                    <div class="col-sm-8">
+                        {{ form_widget(form.confirm_password, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
+                <div class="form-group row mb-4">
+                    {{ form_label(form.campus, 'Campus :', {'label_attr': {'class': 'col-sm-4 col-form-label text-left'}}) }}
+                    <div class="col-sm-8">
+                        {{ form_widget(form.campus, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
+                <div class="form-group row mb-4">
+                    {{ form_label(form.photo, 'Ma photo :', {'label_attr': {'class': 'col-sm-4 col-form-label text-left'}}) }}
+                    <div class="col-sm-8">
+                        {{ form_widget(form.photo, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="btn btn-primary me-3">Enregistrer</button>
+                    <a href="{{ path('main_home') }}" class="btn btn-secondary">Annuler</a>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
