@@ -6,7 +6,7 @@
     <h1 class="text-center">Gérer les villes</h1>
 
     <!-- Formulaire pour filtrer -->
-    {{ form_start(filterForm) }}
+    {{ form_start(filterForm, {'attr': {'data-turbo': 'false'}}) }}
     <div class="mx-3">
         <h2 class="col">Filtrer les villes</h2>
         <div class="d-flex gap-2 col-3">
