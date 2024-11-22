@@ -6,7 +6,7 @@
     align-self: flex-start; /* Assure que la photo commence au même niveau que le formulaire */
 }
 
-/*Tableau page main*/
+/* Tableau page main */
 .table-responsive {
     max-height: 400px;
     overflow-y: auto;
@@ -14,4 +14,3 @@
     border-radius: 0.25rem;
     padding: 0 0.5rem 0.5rem 0.5rem;
 }
-
