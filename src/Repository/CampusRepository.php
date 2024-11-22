@@ -49,6 +49,7 @@ class CampusRepository extends ServiceEntityRepository
                 ->setParameter('search', '%'.$filters['search'].'%');
         }
 
+        $qb->orderBy('c.name', 'ASC');
         return $qb->getQuery()->getResult();
     }
 

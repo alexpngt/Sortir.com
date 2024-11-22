@@ -49,6 +49,7 @@ class VilleRepository extends ServiceEntityRepository
                 ->setParameter('search', '%'.$filters['search'].'%');
         }
 
+        $qb->orderBy('v.nom', 'ASC');
         return $qb->getQuery()->getResult();
     }
 }
