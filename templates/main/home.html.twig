@@ -4,7 +4,7 @@
     <div class="container mt-4">
         <h1>Filtrer les sorties</h1>
 
-        {{ form_start(form) }}
+        {{ form_start(form, {'attr': {'data-turbo': 'false'}}) }}
         <div class="row g-3">
             <div class="col-md-3">{{ form_row(form.campusOrganisateur) }}</div>
             <div class="col-md-3">{{ form_row(form.search) }}</div>
@@ -21,6 +21,56 @@
             <button class="btn btn-primary" type="submit">Rechercher</button>
         </div>
         {{ form_end(form) }}
+    </div>
+    <div class="container">
+        <h2>Liste des sorties</h2>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead class="sticky-top">
+                <tr>
+                    <th>Nom de la sortie</th>
+                    <th>Date de la sortie</th>
+                    <th>Clôture</th>
+                    <th>Inscrits / Places</th>
+                    <th>État</th>
+                    {# TODO: Ajouter le TH inscription ou non une fois l'auth mise en place #}
+                    {#<th>Inscrit</th>#}
+                    <th>Organisateur</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for sortie in sorties %}
+                    <tr>
+                        <td>{{ sortie.name }}</td>
+                        <td>{{ sortie.dateStart|date('d/m/Y H:i') }}</td>
+                        <td>{{ sortie.dateLimitInscription|date('d/m/Y') }}</td>
+                        <td>{{ sortie.participants|length }} / {{ sortie.nbMaxInscription }}</td>
+                        <td>{{ sortie.etat.libelle }}</td>
+                        {# TODO: Ajouter le TD inscription ou non une fois l'auth mise en place #}
+                        {# <td>{{ sortie.isUserRegistered(app.user) ? "X" : "" }}</td> #}
+                        {# TODO: Changer le href par la route vers les profils une fois existante #}
+                        <td><a href="/" title="" class="text-decoration-none">{{ sortie.organisateur.firstname }} {{ sortie.organisateur.lastname }}</a></td>
+                        <td>
+                            {% if sortie.etat.libelle == 'Ouvert' and not sortie.isUserRegistered(app.user) %}
+                                <a href="#" class="btn btn-primary btn-sm">S'inscrire</a>
+                            {% elseif sortie.etat.libelle == 'Ouvert' and sortie.isUserRegistered(app.user) %}
+                                <a href="#" class="btn btn-danger btn-sm">Se désister</a>
+                            {% elseif sortie.etat.libelle == 'En création' and sortie.organisateur == app.user %}
+                                <a href="#" class="btn btn-success btn-sm">Modifier</a>
+                                <a href="#" class="btn btn-warning btn-sm">Publier</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="8">Aucune sortie trouvée.</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}
 
 {% block title %}Sortir.com | Accueil{% endblock %}
