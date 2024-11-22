@@ -56,8 +56,6 @@ class User implements \Symfony\Component\Security\Core\User\PasswordAuthenticate
 
     #[ORM\Column(length: 180)]
     #[Assert\NotBlank(message: 'Email obligatoire')]
-    #[Assert\Email(message: 'Email non valide')]
-    #[Assert\Unique(message: "Une erreur s'est produite...")]
     private ?string $email = null;
 
     #[ORM\Column(length: 180)]

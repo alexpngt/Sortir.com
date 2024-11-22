@@ -37,6 +37,7 @@ final class UserController extends AbstractController
         ]);
     }
 
+    // affiche la page d'un participant depuis un autre participant ..
     #[Route('/{id}', name: 'user_show', methods: ['GET'])]
     public function show(User $user): Response
     {
@@ -45,23 +46,7 @@ final class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: '', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(UserType::class, $user);
-        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('user_show', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('user/edit.html.twig', [
-            'user' => $user,
-            'form' => $form,
-        ]);
-    }
 
     #[Route('/{id}', name: 'user_delete', methods: ['POST'])]
     public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
@@ -74,8 +59,9 @@ final class UserController extends AbstractController
         return $this->redirectToRoute('main_home', [], Response::HTTP_SEE_OTHER);
     }
 
+    // Mon profil
     #[Route('/edit/{id}', name: 'user_edit', methods: ['GET', 'POST'])]
-    public function editProfil(int $id,Request $request, UserRepository $userRepository, EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordHasher): Response
+    public function editProfil(int $id, Request $request, UserRepository $userRepository, EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordHasher): Response
     {
         $user = $userRepository->find($id); // Récup° du user via son id
 
@@ -84,31 +70,41 @@ final class UserController extends AbstractController
         }
 
         // Créer et gérer le formulaire
-        $form = $this->createForm(UserForm::class, $user);
-        $form->handleRequest($request);
+        $userForm = $this->createForm(UserForm::class, $user);
+        $userForm->handleRequest($request);
 
-        // Si le formulaire est soumis et valide
-        if ($form->isSubmitted() && $form->isValid()) {
-            /** @var string $plainPassword */
-            $plainPassword = $form->get('plainPassword')->getData();
 
-            // encode the plain password
-            $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
-            $em->flush(); // Enregistrer les modifications
+        if ($userForm->isSubmitted()) {
+            if ($userForm->isValid()) {
+                // TODO : ajouter : && $this->getUser() pour sécuriser et soumettre que si l'utilisateur est co
+                // TODO : Dans twig, faire en sorte d'afficher le formulaire que si l'utilisateur est connecté
 
-            // Ajouter un message flash de succès
-            $this->addFlash('success', 'Votre profil a été mis à jour.');
+                /** @var string $plainPassword */
+                $plainPassword = $userForm->get('plainPassword')->getData();
+                if ($plainPassword) {
+                    // Encode le mot de passe uniquement si un nouveau mot de passe est fourni
+                    $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
+                }
+                $em->flush(); // Enregistrer les modifications
 
-            // Rediriger vers la même page pour éviter la resoumission
-            return $this->redirectToRoute('user_edit', ['id' => $id]);
+                // Ajouter un message flash de succès
+                $this->addFlash('success', 'Votre profil a été mis à jour.');
+
+                // Rediriger vers la même page pour éviter la resoumission
+                return $this->redirectToRoute('user_edit', ['id' => $id]);
+            } else {
+                // Si le formulaire contient des erreurs
+                // test à suppr
+                $this->addFlash('danger', 'Veuillez corriger les erreurs dans le formulaire.');
+            }
         }
 
         // Renvoyer le formulaire à twig
         return $this->render('user/profil.html.twig', [
             'user' => $user,
-            'form' => $form->createView(),
+            'form' => $userForm->createView(),
         ]);
 
 
-
-}}
+    }
+}
