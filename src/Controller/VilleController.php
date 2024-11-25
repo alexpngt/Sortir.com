@@ -12,7 +12,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/ville')]
+
+#[Route('/admin/ville')]
 class VilleController extends AbstractController
 {
     #[Route('/', name: 'ville_show', methods: ['GET', 'POST'])]

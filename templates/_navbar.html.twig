@@ -1,3 +1,4 @@
+{% if app.user %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom d-flex flex-wrap justify-content-between">
     <div class="container-fluid d-flex align-items-center">
         <a class="navbar-brand d-flex align-items-center" href="/">
@@ -8,13 +9,14 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-                {# Todo: Ville et Campus devront être visibles uniquement par les admins #}
+                {% if is_granted("ROLE_ADMIN") %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('ville_show') }}">Ville</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('campus_show') }}">Campus</a>
                 </li>
+                {% endif %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('main_home') }}">Accueil</a>
                 </li>
@@ -23,16 +25,14 @@
                     <a class="nav-link" href="{{ path('user_edit', {id: 1}) }}">Mon profil</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/">Se déconnecter</a>
+                        <a class="nav-link" href="{{ path('app_logout') }}">Se déconnecter</a>
                 </li>
             </ul>
         </div>
     </div>
     <div class="d-flex flex-column pe-5 ms-auto">
         <span>Date du jour : {{ "now"|date('d/m/Y') }}</span>
-        <!-- If temporaire -->
-        {% if app.user %}
             <span>Participant : {{ app.user ? app.user.firstname ~ ' ' ~ app.user.lastname : 'Invité' }}</span>
-        {% endif %}
     </div>
 </nav>
+{% endif %}

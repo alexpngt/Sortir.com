@@ -46,6 +46,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         $admin->setEmail('admin@eni.fr');
         $admin->setPassword($this->userPasswordHasher->hashPassword($admin, 'admin'));
         $admin->setAdmin(true);
+        $admin->setRoles(['ROLE_ADMIN']);
         $admin->setActive(true);
         $admin->setCampus($campusList[array_rand($campusList)]); // Campus aléatoire
 
@@ -67,6 +68,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             $user->setPassword($this->userPasswordHasher->hashPassword($user, '123456'));
 
             $user->setAdmin(false); // Les utilisateurs standards ne sont pas admin
+            $user->setRoles(['ROLE_USER']);
             $user->setActive($faker->boolean(90)); // 90% de chances d'être actif
 
             # campus en fonction des 3 campus
