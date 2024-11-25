@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Afficher une sortie | {{ parent() }}{% endblock %}
+
+{% block body %}
+    <!-- Infos de la sortie -->
+    <h1 class="text-center mt-3">{{ sortie.name }}</h1>
+    <div class="container d-flex justify-content-around mt-3">
+        <div class="col-4">
+            <p>Nom de la sortie : {{ sortie.name }}</p>
+            <p>Date et heure de la sortie : {{ sortie.dateStart|date("d/m/Y H:i") }}</p>
+            <p>Date limite d'inscription : {{ sortie.dateLimitInscription|date("d/m/Y H:i") }}</p>
+            <p>Nombre de places : {{ sortie.nbMaxInscription }}</p>
+            <p>Durée : {{ sortie.duration }} minutes</p>
+            <p>Description et infos : {{ sortie.infosSortie }}</p>
+        </div>
+        <div class="col-4">
+            <p>Campus : {{ sortie.campusOrganisateur.name }}</p>
+            <p>Lieu : {{ sortie.lieu.nom }}</p>
+            <p>Rue : {{ sortie.lieu.rue }} {{ sortie.lieu.ville.nom|upper }}</p>
+            <p>Code postal : {{ sortie.lieu.ville.codePostal }}</p>
+            <p>Latitude : {{ sortie.lieu.latitude }}</p>
+            <p>Longitude : {{ sortie.lieu.longitude }}</p>
+        </div>
+    </div>
+    {# Bouton retour et modifier si l'utilisateur est l'auteur #}
+    <div class="container col-md-10 d-flex justify-content-center gap-2">
+        {% if sortie.organisateur is same as app.user %}
+            <a class="btn btn-primary" href="{{ path('sortie_edit', {id: sortie.id}) }}">Modifier</a>
+        {% endif %}
+        <a class="btn btn-primary" href="{{ path('main_home') }}">Retour</a>
+    </div>
+
+    <!-- Tableau avec les participants inscrits -->
+
+    <div class="container mt-3">
+        <h2 class="">Liste des participants :</h2>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead class="sticky-top table">
+                <tr>
+                    <th>Pseudo</th>
+                    <th>Nom</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for participant in sortie.participants %}
+                    <tr>
+                        <td>{{ participant.username }}</td>
+                        <td>{{ participant.firstname }} {{ participant.lastname }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+{% endblock %}
