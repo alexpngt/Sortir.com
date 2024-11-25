@@ -21,8 +21,8 @@
                     <a class="nav-link" href="{{ path('main_home') }}">Accueil</a>
                 </li>
                 <li class="nav-item">
-                    <!-- TODO: remplacer id: 1 par app.user.id quand l'authentification sera dispo !! -->
-                    <a class="nav-link" href="{{ path('user_edit', {id: 1}) }}">Mon profil</a>
+
+                    <a class="nav-link" href="{{ path('user_edit', {id: app.user.id}) }}">Mon profil</a>
                 </li>
                 <li class="nav-item">
                         <a class="nav-link" href="{{ path('app_logout') }}">Se déconnecter</a>

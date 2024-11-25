@@ -44,8 +44,9 @@
 
             <!-- Colonne formulaire -->
             <div class="col-md-6">
-                {{ form_start(form, {'attr': {'data-turbo': 'false'}}) }}                <div class="form-group row mb-3">
+                {{ form_start(form, {'attr': {'data-turbo': 'false'}}) }}
 
+                <div class="form-group row mb-3">
                     {# Champ Pseudo avec label et aide #}
                     {{ form_label(form.username, 'Pseudo :', {'label_attr': {'class': 'col-sm-4 col-form-label text-left'}}) }}
                     <div class="col-sm-8">

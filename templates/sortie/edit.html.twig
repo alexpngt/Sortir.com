@@ -1,0 +1,127 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier une sortie | {{ parent() }}{% endblock %}
+
+{% block body %}
+    <!-- Infos de la sortie -->
+    <h1 class="text-center mt-3"> Modifier une sortie</h1>
+    {{ form_errors(sortieForm) }}
+    <div class="d-flex container col-md-10 mt-3">
+        {{ form_start(sortieForm, {'attr': {'class': 'container d-flex justify-content-between'}}) }}
+        <div class="col-md-5 d-md-inline">
+            {# Champ Nom de la sortie #}
+            <div class="form-group row mb-3">
+                {{ form_label(sortieForm.name) }}
+                <div class="col-sm-8">
+                    {{ form_widget(sortieForm.name) }}
+                    {{ form_errors(sortieForm.name) }}
+                </div>
+            </div>
+            {# Champ Date et heure de la sortie #}
+            <div class="form-group row mb-3">
+                {{ form_label(sortieForm.dateStart) }}
+                <div class="col-sm-5">
+                    {{ form_widget(sortieForm.dateStart) }}
+                    {{ form_errors(sortieForm.dateStart) }}
+                </div>
+            </div>
+            {# Champ Date limite d'inscription #}
+            <div class="form-group row mb-3">
+                {{ form_label(sortieForm.dateLimitInscription) }}
+                <div class="col-sm-5">
+                    {{ form_widget(sortieForm.dateLimitInscription) }}
+                    {{ form_errors(sortieForm.dateLimitInscription) }}
+                </div>
+            </div>
+            {# Champ Nombre de places #}
+            <div class="form-group justify-content-between row mb-3">
+                {{ form_label(sortieForm.nbMaxInscription) }}
+                <div class="col-sm-3">
+                    {{ form_widget(sortieForm.nbMaxInscription) }}
+                    {{ form_errors(sortieForm.nbMaxInscription) }}
+                </div>
+            </div>
+            {# Champ Durée #}
+            <div class="form-group row mb-3">
+                {{ form_label(sortieForm.duration) }}
+                <div class="col-sm-3">
+                    {{ form_widget(sortieForm.duration) }}
+                    {{ form_errors(sortieForm.duration) }}
+                </div>
+            </div>
+            {# Champ Description #}
+            <div class="form-group row mb-3">
+                {{ form_label(sortieForm.infosSortie) }}
+                <div class="col-sm-8">
+                    {{ form_widget(sortieForm.infosSortie) }}
+                    {{ form_errors(sortieForm.infosSortie) }}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5 d-md-inline">
+            {# Champ Campus organisateur#}
+            <div class="form-group row mb-3">
+                {{ form_label(sortieForm.campusOrganisateur) }}
+                <div class="col-sm-8">
+                    {{ form_widget(sortieForm.campusOrganisateur) }}
+                    {{ form_errors(sortieForm.campusOrganisateur) }}
+                </div>
+            </div>
+            {# Champ Lieu#}
+            <div class="form-group row mb-3">
+                {{ form_label(sortieForm.lieu) }}
+                <div class="col-sm-8">
+                    {{ form_widget(sortieForm.lieu) }}
+                    {{ form_errors(sortieForm.lieu) }}
+                </div>
+            </div>
+            {# Champ Rue#}
+            <div class="form-group row mb-3">
+                <div class="col-sm-4">
+                    Rue :
+                </div>
+                <div class="col-sm-8 text-end">
+                    {{ sortie.lieu.rue }} {{ sortie.lieu.ville.nom|upper }}
+                </div>
+            </div>
+            {# Champ Code postal#}
+            <div class="form-group row mb-3">
+                <div class="col-sm-4">
+                    Code postal :
+                </div>
+                <div class="col-sm-8 text-end">
+                    {{ sortie.lieu.ville.codePostal }}
+                </div>
+            </div>
+            {# Champ Latitude#}
+            <div class="form-group row mb-3">
+                <div class="col-sm-4">
+                    Latitude :
+                </div>
+                <div class="col-sm-8 text-end">
+                    {{ sortie.lieu.latitude }}
+                </div>
+            </div>
+            {# Champ Longitude#}
+            <div class="form-group row mb-3">
+                <div class="col-sm-4">
+                    Longitude :
+                </div>
+                <div class="col-sm-8 text-end">
+                    {{ sortie.lieu.longitude }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {# Boutons d'action #}
+    <div class="container col-md-10 d-flex justify-content-center gap-2">
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+        {{ form_widget(sortieForm.publish) }}
+        <button type="submit"
+                formaction="{{ path('sortie_delete', {id: sortie.id, token: csrf_token('delete'~sortie.id)}) }}"
+                class="btn btn-danger">Supprimer la sortie</button>
+        <a href="{{ path('main_home') }}" class="btn btn-primary">Annuler</a>
+    </div>
+    {{ form_end(sortieForm) }}
+{% endblock %}
+

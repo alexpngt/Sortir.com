@@ -26,10 +26,8 @@
             {% endfor %}
             {% block body %}{% endblock %}
         </main>
-        {% block footer %}
-            <footer class="fixed-bottom">
-                <p class="text-center">{{ "now"|date("Y")}} - ENI Sortir.com</p>
-            </footer>
-        {% endblock %}
+        <footer>
+            <p class="text-center">&copy; {{ "now"|date("Y")}} - ENI Sortir.com</p>
+        </footer>
     </body>
 </html>
