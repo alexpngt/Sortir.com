@@ -13,11 +13,11 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Email;
-use Symfony\Component\Validator\Constraints\EqualTo;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Image;
@@ -31,12 +31,13 @@ class UserForm extends AbstractType
             ->add('username', TextType::class, [
                 'label' => 'Pseudo',
                 'required' => true,
+                'help' => 'Le pseudo doit contenir entre 3 et 180 caractères.',
                 'constraints' => [
                     new NotBlank(['message' => 'Le pseudo est obligatoire']),
                     new Length([
                         'min' => 3,
                         'minMessage' => "Le pseudo doit comporter au moins {{ limit }} caractères.",
-                        'max' => 180 ]),
+                        'max' => 180]),
                 ],
             ])
             ->add('firstname', TextType::class, [
@@ -51,7 +52,6 @@ class UserForm extends AbstractType
                 'required' => true,
                 'constraints' => [
                     new NotBlank(['message' => 'Le nom est obligatoire']),
-
                 ],
             ])
             ->add('telephone', TextType::class, [
@@ -66,10 +66,11 @@ class UserForm extends AbstractType
                     new Email(['message' => 'Veuillez entrer un email valide']),
                 ],
             ])
-            ->add('password', PasswordType::class, [
+            ->add('plainPassword', PasswordType::class, [
                 'label' => 'Mot de passe',
-                'mapped' => false, // Champ non mappé à l'entité (sera hashé avant sauvegarde)
+                'mapped' => false, // pas lié à l'entité User (sera hashé avant sauvegarde)
                 'required' => true,
+                'help' => 'Le mot de passe doit contenir au moins 6 caractères',
                 'constraints' => [
                     new NotBlank(['message' => 'Le mot de passe est obligatoire']),
                     new Length([
@@ -79,20 +80,16 @@ class UserForm extends AbstractType
                     ]),
                 ],
             ])
-
             ->add('confirm_password', PasswordType::class, [
                 'label' => 'Confirmation',
                 'mapped' => false, // Champ non mappé à l'entité
                 'required' => true,
+                'help' => 'Le mot de passe doit être identique au champ précédent',
                 'constraints' => [
+                    //changé pour pb soumission form (Equato rempl par 1 callback
                     new NotBlank(['message' => 'La confirmation du mot de passe est obligatoire']),
-                    new EqualTo([
-                        'propertyPath' => 'password',
-                        'message' => 'Les mots de passe doivent être identiques',
-                    ]),
                 ],
             ])
-
             ->add('campus', EntityType::class, [
                 'label' => 'Campus',
                 'class' => Campus::class,
@@ -109,7 +106,6 @@ class UserForm extends AbstractType
                         ->orderBy('c.name', 'ASC');
                 },
             ])
-
             ->add('photo', FileType::class, [
                 'label' => 'Ma photo',
                 'required' => false, // Photo facultative
@@ -139,6 +135,20 @@ class UserForm extends AbstractType
                 ]);
             }
         });
+
+        // Ajout d'une validation personnalisée pour vérifier si les mots de passe correspondent
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
+            $form = $event->getForm();
+
+            // Récupérer les valeurs des champs
+            $plainPassword = $form->get('plainPassword')->getData();
+            $confirmPassword = $form->get('confirm_password')->getData();
+
+            // Vérifier si les mots de passe correspondent
+            if ($plainPassword !== $confirmPassword) {
+                $form->get('confirm_password')->addError(new FormError('Les mots de passe ne correspondent pas.'));
+            }
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -148,3 +158,4 @@ class UserForm extends AbstractType
         ]);
     }
 }
+

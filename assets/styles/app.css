@@ -6,10 +6,8 @@
     align-self: flex-start; /* Assure que la photo commence au même niveau que le formulaire */
 }
 
-/*Tableau page main*/
-.table-responsive {
-    max-height: 400px;
-    overflow-y: auto;
+/* Tableau page main */
+.container-table {
     border: 1px solid #dee2e6;
     border-radius: 0.25rem;
     padding: 0 0.5rem 0.5rem 0.5rem;

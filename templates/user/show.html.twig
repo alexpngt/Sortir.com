@@ -1,50 +1,74 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}User{% endblock %}
+{% block title %}Profil de {{ user.username }} {% endblock %}
 
 {% block body %}
-    <h1>User</h1>
+    <div class="container mt-5">
+        <!-- Titre -->
+        <h1 class="text-center mb-4">Profil de {{ user.username }}</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ user.id }}</td>
-            </tr>
-            <tr>
-                <th>Firstname</th>
-                <td>{{ user.firstname }}</td>
-            </tr>
-            <tr>
-                <th>Lastname</th>
-                <td>{{ user.lastname }}</td>
-            </tr>
-            <tr>
-                <th>Telephone</th>
-                <td>{{ user.telephone }}</td>
-            </tr>
-            <tr>
-                <th>Email</th>
-                <td>{{ user.email }}</td>
-            </tr>
-            <tr>
-                <th>Password</th>
-                <td>{{ user.password }}</td>
-            </tr>
-            <tr>
-                <th>Admin</th>
-                <td>{{ user.admin ? 'Yes' : 'No' }}</td>
-            </tr>
-            <tr>
-                <th>Active</th>
-                <td>{{ user.active ? 'Yes' : 'No' }}</td>
-            </tr>
-        </tbody>
-    </table>
+        <!-- Affichage de la photo de profil et des informations de l'utilisateur -->
+        <div class="row mb-5">
+            <!-- Colonne photo -->
+            <div class="col-md-3 d-flex justify-content-center">
+                <div class="mt-0">
+                    {% if user.photo %}
+                        {# Affiche la photo de profil si l'utilisateur en a une #}
+                        <img src="{{ asset('uploads/profil/' ~ user.photo) }}" alt="Photo de profil" class="img-fluid rounded-circle profile-photo">
+                    {% else %}
+                        {# Affiche un avatar par défaut si l'utilisateur n'a pas de photo #}
+                        <img src="{{ asset('img/default-avatar.png') }}" alt="Avatar par défaut" class="img-fluid rounded-circle profile-photo">
+                    {% endif %}
+                </div>
+            </div>
 
-    <a href="{{ path('app_user_index') }}">back to list</a>
+            <!-- Colonne des informations de l'utilisateur -->
+            <div class="col-md-6">
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <th>Prénom</th>
+                        <td>{{ user.firstname }}</td>
+                    </tr>
+                    <tr>
+                        <th>Nom</th>
+                        <td>{{ user.lastname }}</td>
+                    </tr>
+                    <tr>
+                        <th>Téléphone</th>
+                        <td>{{ user.telephone }}</td>
+                    </tr>
+                    <tr>
+                        <th>E-mail</th>
+                        <td>{{ user.email }}</td>
+                    </tr>
+                    <tr>
+                        <th>Campus</th>
+                        <td>{{ user.campus.name }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-    <a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a>
+        <!-- Lien RETOUR soit vers page d'accueil, soit vers la sortie -->
+        <!-- Condition pour déterminer où rediriger après -->
+        <div class="text-center mt-4">
+            {% if app.request.headers.get('referer') is not empty %}
+                {% set referer = app.request.headers.get('referer') %} {# referer = utl de la page précédente visitée par le user #}
 
-    {{ include('user/_delete_form.html.twig') }}
+                {% if referer matches '/sortie/' %}
+                    {# Si on vient d'une page de détail de sortie, on retourne à cette page #}
+                    <a href="{{ referer }}" class="btn btn-secondary">Retour à la sortie</a>
+                     {# TODO : ajuster si besoin une fois la page de détail de sortie faite #}
+                {% else %}
+                    {# Si on vient d'ailleurs, on retourne à la page d'accueil #}
+                    <a href="{{ path('main_home') }}" class="btn btn-secondary">Retour à l'accueil</a>
+                {% endif %}
+            {% else %}
+                {# Si la variable 'referer' est vide (par exemple, on arrive directement sur cette page), on redirige vers la page d'accueil #}
+                <a href="{{ path('main_home') }}" class="btn btn-secondary">Retour à l'accueil</a>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}

@@ -7,73 +7,118 @@
         <!-- Titre -->
         <h1 class="text-center mb-4">Mon Profil</h1>
 
+        <!-- Affichage des messages flash (par exemple, succès ou erreur spécifique) -->
+        {# Ajouté pour gérer les messages flash : succès (vert) ou erreurs globales (rouge) #}
+       {% for label, messages in app.flashes %}
+            {% if messages is not empty %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ label == 'error' ? 'danger' : label }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+        <!-- Affichage des erreurs globales du formulaire -->
+        {# Condition ajoutée pour afficher les erreurs globales dans une alerte rouge au-dessus du formulaire #}
+        {% if form.vars.errors|length > 0 %}
+            <pre>{{ dump(form.vars.errors) }}</pre>
+            <div class="alert alert-danger" role="alert">
+                {{ form_errors(form) }}
+            </div>
+        {% endif %}
+
         <!-- Contenu aligné photo et formulaire -->
         <div class="row">
             <!-- Colonne photo -->
             <div class="col-md-3 d-flex">
                 <div class="mt-0">
                     {% if user.photo %}
+                        {# Affiche la photo de profil de l'utilisateur s'il en a une #}
                         <img src="{{ asset('uploads/profil/' ~ user.photo) }}" alt="Photo de profil" class="img-fluid rounded-circle profile-photo">
                     {% else %}
+                        {# Affiche un avatar par défaut si l'utilisateur n'a pas de photo #}
                         <img src="{{ asset('img/default-avatar.png') }}" alt="Avatar par défaut" class="img-fluid rounded-circle profile-photo">
                     {% endif %}
                 </div>
             </div>
+
             <!-- Colonne formulaire -->
             <div class="col-md-6">
-                {{ form_start(form) }}
-                <div class="form-group row mb-3">
+                {{ form_start(form, {'attr': {'data-turbo': 'false'}}) }}                <div class="form-group row mb-3">
+
+                    {# Champ Pseudo avec label et aide #}
                     {{ form_label(form.username, 'Pseudo :', {'label_attr': {'class': 'col-sm-4 col-form-label text-left'}}) }}
                     <div class="col-sm-8">
                         {{ form_widget(form.username, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_help(form.username) }} {# Ajout pour afficher l'aide #}
+                        {# Affiche les erreurs liés au champ username #}
+                        {{ form_errors(form.username) }}
                     </div>
                 </div>
                 <div class="form-group row mb-3">
+                    {# Champ Prénom #}
                     {{ form_label(form.firstname, 'Prénom :', {'label_attr': {'class': 'col-sm-4 col-form-label text-left'}}) }}
                     <div class="col-sm-8">
                         {{ form_widget(form.firstname, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.firstname) }}
                     </div>
                 </div>
                 <div class="form-group row mb-3">
+                    {# Champ Nom #}
                     {{ form_label(form.lastname, 'Nom :', {'label_attr': {'class': 'col-sm-4 col-form-label text-left'}}) }}
                     <div class="col-sm-8">
                         {{ form_widget(form.lastname, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.lastname) }}
                     </div>
                 </div>
                 <div class="form-group row mb-3">
+                    {# Champ Téléphone #}
                     {{ form_label(form.telephone, 'Téléphone :', {'label_attr': {'class': 'col-sm-4 col-form-label text-left'}}) }}
                     <div class="col-sm-8">
                         {{ form_widget(form.telephone, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.telephone) }}
                     </div>
                 </div>
                 <div class="form-group row mb-3">
+                    {# Champ Email #}
                     {{ form_label(form.email, 'Email :', {'label_attr': {'class': 'col-sm-4 col-form-label text-left'}}) }}
                     <div class="col-sm-8">
                         {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.email) }}
                     </div>
                 </div>
                 <div class="form-group row mb-3">
-                    {{ form_label(form.password, 'Mot de passe :', {'label_attr': {'class': 'col-sm-4 col-form-label text-left'}}) }}
+                    {# Champ Mot de passe #}
+                    {{ form_label(form.plainPassword, 'Mot de passe :', {'label_attr': {'class': 'col-sm-4 col-form-label text-left'}}) }}
                     <div class="col-sm-8">
-                        {{ form_widget(form.password, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_widget(form.plainPassword, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_help(form.plainPassword) }} {# Ajout pour afficher l'aide #}
+                        {{ form_errors(form.plainPassword) }}
                     </div>
                 </div>
                 <div class="form-group row mb-3">
+                    {# Champ Confirmation du mot de passe #}
                     {{ form_label(form.confirm_password, 'Confirmation :', {'label_attr': {'class': 'col-sm-4 col-form-label text-left'}}) }}
                     <div class="col-sm-8">
                         {{ form_widget(form.confirm_password, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_help(form.confirm_password) }}
+                        {{ form_errors(form.confirm_password) }}
                     </div>
                 </div>
                 <div class="form-group row mb-4">
+                    {# Champ Campus avec liste déroulante #}
                     {{ form_label(form.campus, 'Campus :', {'label_attr': {'class': 'col-sm-4 col-form-label text-left'}}) }}
                     <div class="col-sm-8">
                         {{ form_widget(form.campus, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.campus) }}
                     </div>
                 </div>
                 <div class="form-group row mb-4">
+                    {# Champ Photo avec téléchargement de fichier #}
                     {{ form_label(form.photo, 'Ma photo :', {'label_attr': {'class': 'col-sm-4 col-form-label text-left'}}) }}
                     <div class="col-sm-8">
                         {{ form_widget(form.photo, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.photo) }}
                     </div>
                 </div>
                 <div class="d-flex justify-content-center">

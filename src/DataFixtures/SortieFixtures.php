@@ -33,7 +33,9 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
 
             $sortie->setDuration($faker->numberBetween(1, 8));
 
-            $dateLimitInscription = \DateTimeImmutable::createFromMutable($faker->dateTimeBetween('now', '+6 months'));
+            // Date limite inscr : entre 3 et 24 h avt le début de la sortie
+            $hoursBeforeStart = $faker->numberBetween(3, 24); // Générer un nombre d'heures entre 3 et 24
+            $dateLimitInscription = $dateStart->sub(new \DateInterval('PT' . $hoursBeforeStart . 'H')); // Soustraire ce nombre d'heures à la date de début
             $sortie->setDateLimitInscription($dateLimitInscription);
 
             $sortie->setNbMaxInscription($faker->numberBetween(5, 30));
