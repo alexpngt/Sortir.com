@@ -7,12 +7,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity(fields: ["email", "username", "telephone"], message: "Cet utilisateur existe déjà !")]
-class User implements \Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface
+class User implements UserInterface, \Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -38,7 +39,6 @@ class User implements \Symfony\Component\Security\Core\User\PasswordAuthenticate
         maxMessage: "Le prénom ne peut pas dépasser 180 caractères"
     )]
     private ?string $lastname = null;
-
 
     #[ORM\Column(length: 15)]
     #[Assert\NotBlank(message: 'Numéro de téléphone obligatoire')]
@@ -102,6 +102,11 @@ class User implements \Symfony\Component\Security\Core\User\PasswordAuthenticate
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $photo = null;
+
+    #[ORM\Column(type: 'json')]
+    private array $roles = [];
+
+
 
     public function __construct()
     {
@@ -280,17 +285,41 @@ class User implements \Symfony\Component\Security\Core\User\PasswordAuthenticate
         return $this;
     }
 
+
+    public function getRoles(): array
+    {
+        return $this->roles;
+    }
+
+    public function setRoles(array $roles): static
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    public function eraseCredentials():void
+    {
+
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
     public function getPhoto(): ?string
     {
         return $this->photo;
     }
 
-    public function setPhoto(?string $photo): static
+    public function setPhoto(string $photo): static
     {
         $this->photo = $photo;
 
         return $this;
     }
+
     public function getFilename(): ?string
     {
         return $this->photo; // Retourne la propriété `photo`

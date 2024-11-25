@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+    {% if error %}
+        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
+
+<div>
+        <img src="{{ asset('img/logo.png') }}" alt="Sortir.com logo" class="object-fit-cover" width="190">
+</div>
+
+<div class="container mt-lg-5">
+        <div class="container mt-lg-5">
+           <form action="{{ path('app_login') }}" method="post">
+               <div class="mb-3">
+                   <label for="email">Identifiant</label>
+                   <input  type="email" value="{{ last_username }}" name="email" class="form-control" required>
+               </div>
+               <div class="mb-3">
+                   <label for="inputPassword">Mot de Passe</label>
+                   <input type="password" id="inputPassword" name="password" class="form-control" autocomplete="current-password" required>
+               </div>
+
+               <div>
+                   <button class="col-sm-1 btn btn-primary" type="submit">Connexion</button>
+               </div>
+
+               <div>
+                   <input type="checkbox" id="remember me" name="_remember_me" value="off">
+                    <label for="remember me">Se souvenir de moi</label>
+
+               </div>
+
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+           </form>
+
+
+</div>
+</div>
+
+    <div>
+{% endblock %}
