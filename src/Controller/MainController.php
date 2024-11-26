@@ -19,7 +19,10 @@ class MainController extends AbstractController
     public function home(Request $request, SortieRepository $sortieRepository, PaginatorInterface $paginator): Response
     {
         //Créer le formulaire de filtres
-        $form = $this->createForm(SortieFilterType::class);
+        $form = $this->createForm(SortieFilterType::class, null, [
+            'method' => 'GET',
+            'csrf_protection' => false,
+        ]);
         $form ->handleRequest($request);
 
         //Appliquer les filtres si le formulaire a été soumis
