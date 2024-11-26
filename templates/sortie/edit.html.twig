@@ -117,9 +117,7 @@
     <div class="container col-md-10 d-flex justify-content-center gap-2">
         <button type="submit" class="btn btn-primary">Enregistrer</button>
         {{ form_widget(sortieForm.publish) }}
-        <button type="submit"
-                formaction="{{ path('sortie_delete', {id: sortie.id, token: csrf_token('delete'~sortie.id)}) }}"
-                class="btn btn-danger">Supprimer la sortie</button>
+        <a href="{{ path('sortie_cancel', {id: sortie.id}) }}" class="btn btn-danger">Annuler la sortie</a>
         <a href="{{ path('main_home') }}" class="btn btn-primary">Annuler</a>
     </div>
     {{ form_end(sortieForm) }}
