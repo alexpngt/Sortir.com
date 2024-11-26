@@ -7,9 +7,8 @@
         <!-- Titre -->
         <h1 class="text-center mb-4">Mon Profil</h1>
 
-        <!-- Affichage des messages flash (par exemple, succès ou erreur spécifique) -->
-        {# Ajouté pour gérer les messages flash : succès (vert) ou erreurs globales (rouge) #}
-       {% for label, messages in app.flashes %}
+        <!-- Affichage des messages flash (succès (vert) ou erreurs globales (rouge)) -->
+        {% for label, messages in app.flashes %}
             {% if messages is not empty %}
                 {% for message in messages %}
                     <div class="alert alert-{{ label == 'error' ? 'danger' : label }}">
@@ -19,7 +18,6 @@
             {% endif %}
         {% endfor %}
         <!-- Affichage des erreurs globales du formulaire -->
-        {# Condition ajoutée pour afficher les erreurs globales dans une alerte rouge au-dessus du formulaire #}
         {% if form.vars.errors|length > 0 %}
             <pre>{{ dump(form.vars.errors) }}</pre>
             <div class="alert alert-danger" role="alert">
@@ -27,26 +25,38 @@
             </div>
         {% endif %}
 
+        <!-- Colonne formulaire -->
+            {{ form_start(form, {'attr': {'data-turbo': 'false'}}) }}
         <!-- Contenu aligné photo et formulaire -->
         <div class="row">
             <!-- Colonne photo -->
             <div class="col-md-3 d-flex">
                 <div class="mt-0">
-                    {% if user.photo %}
-                        {# Affiche la photo de profil de l'utilisateur s'il en a une #}
-                        <img src="{{ asset('uploads/profil/' ~ user.photo) }}" alt="Photo de profil" class="img-fluid rounded-circle profile-photo">
+                    {% if user.photo and user.photo != constant('App\\Entity\\User::DEFAULT_PHOTO') %}
+                        {# Affiche la photo de profil de l'utilisateur uploadée #}
+                        <img src="{{ asset('uploads/images/user/' ~ user.photo) }}" alt="Photo de profil"
+                             class="img-fluid rounded-circle profile-photo">
                     {% else %}
-                        {# Affiche un avatar par défaut si l'utilisateur n'a pas de photo #}
-                        <img src="{{ asset('img/default-avatar.png') }}" alt="Avatar par défaut" class="img-fluid rounded-circle profile-photo">
+                        {# Affiche l'avatar par défaut depuis assets/img #}
+                        <img src="{{ asset('img/default-avatar.png') }}" alt="Avatar par défaut"
+                             class="img-fluid rounded-circle profile-photo">
+                    {% endif %}
+
+                    {# Checkbox pour supprimer la photo, placée directement sous l'image #}
+                    {% if form.deleteImage is defined %}
+                        <div class="mt-2">
+                            {{ form_widget(form.deleteImage, {'attr': {'class': 'form-check-input'}}) }}
+                            {{ form_label(form.deleteImage, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                        </div>
                     {% endif %}
                 </div>
             </div>
 
             <!-- Colonne formulaire -->
             <div class="col-md-6">
-                {{ form_start(form, {'attr': {'data-turbo': 'false'}}) }}
-
+              {#  {{ form_start(form, {'attr': {'data-turbo': 'false'}}) }} #}
                 <div class="form-group row mb-3">
+
                     {# Champ Pseudo avec label et aide #}
                     {{ form_label(form.username, 'Pseudo :', {'label_attr': {'class': 'col-sm-4 col-form-label text-left'}}) }}
                     <div class="col-sm-8">
@@ -115,7 +125,7 @@
                     </div>
                 </div>
                 <div class="form-group row mb-4">
-                    {# Champ Photo avec téléchargement de fichier #}
+                    {# Champ PhotoService avec téléchargement de fichier #}
                     {{ form_label(form.photo, 'Ma photo :', {'label_attr': {'class': 'col-sm-4 col-form-label text-left'}}) }}
                     <div class="col-sm-8">
                         {{ form_widget(form.photo, {'attr': {'class': 'form-control'}}) }}

@@ -13,15 +13,13 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Image;
-
 
 class UserForm extends AbstractType
 {
@@ -34,10 +32,7 @@ class UserForm extends AbstractType
                 'help' => 'Le pseudo doit contenir entre 3 et 180 caractères.',
                 'constraints' => [
                     new NotBlank(['message' => 'Le pseudo est obligatoire']),
-                    new Length([
-                        'min' => 3,
-                        'minMessage' => "Le pseudo doit comporter au moins {{ limit }} caractères.",
-                        'max' => 180]),
+                    new Length(['min' => 3, 'max' => 180]),
                 ],
             ])
             ->add('firstname', TextType::class, [
@@ -57,6 +52,10 @@ class UserForm extends AbstractType
             ->add('telephone', TextType::class, [
                 'label' => 'Téléphone',
                 'required' => true,
+                'constraints' => [
+                    new NotBlank(['message' => 'Le numéro de téléphone est obligatoire']),
+                    new Length(['min' => 10, 'max' => 15]),
+                ],
             ])
             ->add('email', EmailType::class, [
                 'label' => 'Email',
@@ -68,85 +67,55 @@ class UserForm extends AbstractType
             ])
             ->add('plainPassword', PasswordType::class, [
                 'label' => 'Mot de passe',
-                'mapped' => false, // pas lié à l'entité User (sera hashé avant sauvegarde)
+                'mapped' => false, // Pas lié à l'entité User
                 'required' => true,
-                'help' => 'Le mot de passe doit contenir au moins 6 caractères',
+                'help' => 'Le mot de passe doit contenir au moins 6 caractères.',
                 'constraints' => [
                     new NotBlank(['message' => 'Le mot de passe est obligatoire']),
-                    new Length([
-                        'min' => 6,
-                        'minMessage' => 'Le mot de passe doit contenir au moins {{ limit }} caractères',
-                        'max' => 4096,
-                    ]),
+                    new Length(['min' => 6, 'max' => 4096]),
                 ],
             ])
             ->add('confirm_password', PasswordType::class, [
-                'label' => 'Confirmation',
-                'mapped' => false, // Champ non mappé à l'entité
+                'label' => 'Confirmation du mot de passe',
+                'mapped' => false, // Pas lié à l'entité User
                 'required' => true,
-                'help' => 'Le mot de passe doit être identique au champ précédent',
                 'constraints' => [
-                    //changé pour pb soumission form (Equato rempl par 1 callback
                     new NotBlank(['message' => 'La confirmation du mot de passe est obligatoire']),
                 ],
             ])
             ->add('campus', EntityType::class, [
                 'label' => 'Campus',
                 'class' => Campus::class,
-                'choice_label' => 'name', // attr de l'entité Campus
+                'choice_label' => 'name',
+                'placeholder' => '-- Choisir un campus --',
                 'required' => true,
-                // Définit un texte par défaut dans le menu déroulant pour guider l'utilisateur avant qu'il ne fasse une sélection
-                'placeholder' => '--Choisir un campus--',
-                // désactive la sélection multiple, permettant à l'utilisateur 1 seul campus
-                'multiple' => false,
-                // Pour trier la liste de campus, on utilise un queryBuilder spécifique dans le formulaire
                 'query_builder' => function (EntityRepository $er) {
-                    // Crée un QueryBuilder pour construire une requête pour récupérer les campus
                     return $er->createQueryBuilder('c')
                         ->orderBy('c.name', 'ASC');
                 },
             ])
             ->add('photo', FileType::class, [
                 'label' => 'Ma photo',
-                'required' => false, // Photo facultative
-                'mapped' => false, // Non mappé directement à l'entité
+                'required' => false, // PhotoService facultative
+                'mapped' => false, // Pas lié directement à l'entité
                 'constraints' => [
                     new Image([
                         'maxSize' => '1024k',
-                        'mimeTypes' => [
-                            'image/jpg',
-                            'image/jpeg',
-                            'image/png',
-                        ],
-                        'mimeTypesMessage' => 'Merci de télécharger une photo de profil valide',
-                    ])
+                        'mimeTypes' => ['image/jpeg', 'image/png'],
+                        'mimeTypesMessage' => 'Merci de télécharger une image au format JPEG ou PNG.',
+                    ]),
                 ],
             ]);
-        // Événement pour ajouter un champ conditionnel si une image est déjà présente
+
+        // Ajout conditionnel du champ "deleteImage" si une photo personnalisée existe
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $user = $event->getData();
-            if ($user && $user->getFilename()) {
-                // cas où on est en modification et qu'une image est déja présente
-                // on ajoute un checkbox pour permettre de dder la suppression de l'image
-                $form = $event->getForm();
-                $form->add('deleteImage', CheckboxType::class, [
-                    'required' => false,
+            if ($user && $user->getPhoto() && $user->getPhoto() !== User::DEFAULT_PHOTO) {
+                $event->getForm()->add('deleteImage', CheckboxType::class, [
+                    'label' => 'Supprimer ma photo de profil',
                     'mapped' => false,
+                    'required' => false,
                 ]);
-            }
-        });
-
-        // Ajout d'une validation personnalisée pour vérifier si les mots de passe correspondent
-        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
-            $form = $event->getForm();
-
-            // Récupérer les valeurs des champs
-            $plainPassword = $form->get('plainPassword')->getData();
-            $confirmPassword = $form->get('confirm_password')->getData();
-
-            // Vérifier si les mots de passe correspondent
-            if ($plainPassword !== $confirmPassword) {
-                $form->get('confirm_password')->addError(new FormError('Les mots de passe ne correspondent pas.'));
             }
         });
     }
@@ -154,8 +123,7 @@ class UserForm extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => User::class,
+            'data_class' => User::class, // Lie le formulaire à l'entité User
         ]);
     }
 }
-
