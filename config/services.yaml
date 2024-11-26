@@ -1,24 +1,27 @@
-# This file is the entry point to configure your own services.
-# Files in the packages/ subdirectory configure your dependencies.
+# Ce fichier est le point d'entrée pour configurer vos propres services.
+# Les fichiers dans le sous-dossier packages/ configurent vos dépendances.
 
-# Put parameters here that don't need to change on each machine where the app is deployed
+# Ajoutez ici les paramètres qui ne nécessitent pas de changer sur chaque machine où l'application est déployée
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    app.uploads_directory: '%kernel.project_dir%/public/uploads/images/user'
 
 services:
-    # default configuration for services in *this* file
+    # Configuration par défaut pour les services dans *ce* fichier
     _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        autowire: true      # Injecte automatiquement les dépendances dans vos services.
+        autoconfigure: true # Enregistre automatiquement vos services comme commandes, abonnés aux événements, etc.
 
-    # makes classes in src/ available to be used as services
-    # this creates a service per class whose id is the fully-qualified class name
+    # Rend les classes dans src/ disponibles pour être utilisées comme services
+    # Cela crée un service par classe dont l'identifiant est le nom complet de la classe
     App\:
         resource: '../src/'
         exclude:
-            - '../src/DependencyInjection/'
-            - '../src/Entity/'
-            - '../src/Kernel.php'
+            - '../src/DependencyInjection/' # Exclut ce dossier de la configuration automatique
+            - '../src/Entity/'              # Exclut les entités
+            - '../src/Kernel.php'           # Exclut la classe Kernel
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    # Définir le service PhotoService avec des arguments personnalisés
+    App\Service\PhotoService:
+        arguments:
+            $targetDirectory: '%app.uploads_directory%'

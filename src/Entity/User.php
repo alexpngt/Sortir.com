@@ -8,13 +8,16 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface; // Pour gérer les mots de passe
 use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity(fields: ["email", "username", "telephone"], message: "Cet utilisateur existe déjà !")]
 class User implements UserInterface, \Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface
 {
+    const DEFAULT_PHOTO = 'default-avatar.png';
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -39,6 +42,7 @@ class User implements UserInterface, \Symfony\Component\Security\Core\User\Passw
         maxMessage: "Le prénom ne peut pas dépasser 180 caractères"
     )]
     private ?string $lastname = null;
+
 
     #[ORM\Column(length: 15)]
     #[Assert\NotBlank(message: 'Numéro de téléphone obligatoire')]
@@ -313,15 +317,11 @@ class User implements UserInterface, \Symfony\Component\Security\Core\User\Passw
         return $this->photo;
     }
 
-    public function setPhoto(string $photo): static
+    public function setPhoto(?string $photo): static
     {
         $this->photo = $photo;
 
         return $this;
     }
 
-    public function getFilename(): ?string
-    {
-        return $this->photo; // Retourne la propriété `photo`
-    }
 }
