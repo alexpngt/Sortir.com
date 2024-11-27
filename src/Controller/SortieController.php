@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Sortie;
+use App\Form\CancelType;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
 use App\Repository\SortieRepository;
@@ -115,7 +116,7 @@ final class SortieController extends AbstractController
         return $this->redirectToRoute('main_home', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/{id}/cancel', name: 'sortie_cancel', methods: ['GET'])]
+    #[Route('/{id}/cancel', name: 'sortie_cancel', methods: ['GET', 'POST'])]
     public function cancel(
         Request $request,
         Sortie $sortie,
@@ -128,11 +129,23 @@ final class SortieController extends AbstractController
             $this->addFlash('danger', "Vous n'êtes pas l'organisateur de cette sortie");
             return $this->redirectToRoute('main_home', [], Response::HTTP_SEE_OTHER);
         }
-        $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Annulée']));
-        $entityManager->persist($sortie);
-        $entityManager->flush();
 
-        return $this->redirectToRoute('main_home', [], Response::HTTP_SEE_OTHER);
+        $cancelForm = $this->createForm(CancelType::class);
+        $cancelForm->handleRequest($request);
+
+        if ($cancelForm->isSubmitted() && $cancelForm->isValid()) {
+            $sortie->setMotifAnnulation($cancelForm->get('motif')->getData());
+            $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Annulée']));
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('main_home', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('sortie/cancel.html.twig', [
+            'sortie' => $sortie,
+            'cancelForm' => $cancelForm,
+        ]);
     }
 
     #[Route('/{id}', name: 'sortie_delete', methods: ['POST'])]
