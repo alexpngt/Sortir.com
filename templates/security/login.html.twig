@@ -1,44 +1,48 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{% endblock %}
+{% block header %}
+<div class="container-fluid d-flex justify-content-center py-4">
+        <img src="{{ asset('img/logo.png') }}" alt="Sortir.com logo" class="object-fit-contain" width="170">
+</div>
+{% endblock %}
 
 {% block body %}
-    {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
-
-<div>
-        <img src="{{ asset('img/logo.png') }}" alt="Sortir.com logo" class="object-fit-cover" width="190">
-</div>
-
-<div class="container mt-lg-5">
-        <div class="container mt-lg-5">
-           <form action="{{ path('app_login') }}" method="post">
-               <div class="mb-3">
-                   <label for="email">Identifiant</label>
-                   <input  type="email" value="{{ last_username }}" name="email" class="form-control" required>
-               </div>
-               <div class="mb-3">
-                   <label for="inputPassword">Mot de Passe</label>
-                   <input type="password" id="inputPassword" name="password" class="form-control" autocomplete="current-password" required>
-               </div>
-
-               <div>
-                   <button class="col-sm-1 btn btn-primary" type="submit">Connexion</button>
-               </div>
-
-               <div>
-                   <input type="checkbox" id="remember me" name="_remember_me" value="off">
-                    <label for="remember me">Se souvenir de moi</label>
-
-               </div>
-
-                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-           </form>
-
-
-</div>
-</div>
-
-    <div>
+        <div class="container d-flex justify-content-center ">
+            <form action="{{ path('app_login') }}" method="post">
+              {% if error %}
+                 <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+              {% endif %}
+                  <div class="container py-2 me-5">
+                     <div class="d-flex align-items-center mb-4">
+                        <label for="email" class="form-label w-50 ">Identifiant :</label>
+                        <input  type="email" value="{{ last_username }}" name="email" class="form-control" required>
+                     </div>
+                     <div class="d-flex align-items-center mb-4 ">
+                        <label for="inputPassword" class="form-label w-50">Mot de passe :</label>
+                        <input type="password" id="inputPassword" name="password" class="form-control"
+                               autocomplete="current-password" required>
+                     </div>
+                  </div>
+                  <div class="container d-flex justify-content-between">
+                      <div>
+                        <button class="btn btn-lg w-100 border-black " type="submit">Connexion</button>
+                      </div>
+                     <div>
+                       <div>
+                         <input type="checkbox" id="remember me" name="_remember_me" value="on">
+                         <label for="remember me" class="form-check-label">Se souvenir de moi</label>
+                       </div>
+                       <div class="d-flex justify-content-end">
+                          <p><a href="">Mot de passe oublié</a></p>
+                       </div>
+                    </div>
+                  </div>
+                   <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+            </form>
+        </div>
+    {% block footer %}
+        <footer class="fixed-bottom">
+            <p class="text-center">{{ "now"|date("Y")}} - ENI Sortir.com</p>
+        </footer>
+    {% endblock %}
 {% endblock %}
