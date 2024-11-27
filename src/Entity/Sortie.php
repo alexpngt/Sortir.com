@@ -26,6 +26,8 @@ class Sortie
     private ?string $name = null;
 
     #[ORM\Column]
+    #[Assert\Type("\DateTimeImmutable")]
+    #[Assert\GreaterThanOrEqual(propertyPath: "dateLimitInscription")]
     private ?\DateTimeImmutable $dateStart = null;
 
     #[ORM\Column]
@@ -33,6 +35,7 @@ class Sortie
     private ?int $duration = null;
 
     #[ORM\Column]
+    #[Assert\Type("\DateTimeImmutable")]
     private ?\DateTimeImmutable $dateLimitInscription = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
@@ -64,6 +67,9 @@ class Sortie
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Lieu $lieu = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $motifAnnulation = null;
 
     public function __construct()
     {
@@ -222,6 +228,18 @@ class Sortie
     public function isUserRegistered(User $user): bool
     {
         return $this->participants->contains($user);
+    }
+
+    public function getMotifAnnulation(): ?string
+    {
+        return $this->motifAnnulation;
+    }
+
+    public function setMotifAnnulation(?string $motifAnnulation): static
+    {
+        $this->motifAnnulation = $motifAnnulation;
+
+        return $this;
     }
 
 }

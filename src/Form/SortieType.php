@@ -9,6 +9,7 @@ use App\Entity\Sortie;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -27,7 +28,7 @@ class SortieType extends AbstractType
                 'label_attr' => ['class' => 'col-sm-4 col-form-label text-left'],
                 'attr' => ['class' => 'form-control'],
             ])
-            ->add('dateStart', DateType::class, [
+            ->add('dateStart', DateTimeType::class, [
                 'label' => 'Date et heure de la sortie :',
                 'widget' => 'single_text',
                 'label_attr' => ['class' => 'col-sm-7 col-form-label text-left'],
@@ -38,7 +39,7 @@ class SortieType extends AbstractType
                 'label_attr' => ['class' => 'col-sm-9 col-form-label text-left'],
                 'attr' => ['class' => 'form-control'],
             ])
-            ->add('dateLimitInscription', DateType::class, [
+            ->add('dateLimitInscription', DateTimeType::class, [
                 'label' => "Date limite d'inscription :",
                 'widget' => 'single_text',
                 'label_attr' => ['class' => 'col-sm-7 col-form-label text-left'],

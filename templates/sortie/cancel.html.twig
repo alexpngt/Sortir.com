@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Annuler une sortie | {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    <div>
+        <h1 class="text-center">Annuler une sortie</h1>
+    </div>
+    {{ form_start(cancelForm) }}
+    <div class="container mt-3 d-block col-md-6">
+        <div class="row">
+            <p class="col-md-6">Nom de la sortie :</p>
+            <p class="col-md-6">{{ sortie.name }}</p>
+        </div>
+        <div class="row">
+            <p class="col-md-6">Date de la sortie :</p>
+            <p class="col-md-6">{{ sortie.dateStart|date('d/m/Y H:i') }}</p>
+        </div>
+        <div class="row">
+            <p class="col-md-6">Campus :</p>
+            <p class="col-md-6">{{ sortie.campusOrganisateur.name }}</p>
+        </div>
+        <div class="row">
+            <p class="col-md-6">Lieu :</p>
+            <p class="col-md-6">{{ sortie.lieu.nom }} {{ sortie.lieu.rue }} {{ sortie.lieu.ville.codePostal }} {{ sortie.lieu.ville.nom }}</p>
+        </div>
+        <div class="row">
+            <div class="col-md-6">{{ form_label(cancelForm.motif) }}</div>
+            <div class="col-md-6">{{ form_widget(cancelForm.motif) }}</div>
+        </div>
+    </div>
+    {# Boutons d'actions #}
+    <div class="container col-md-10 d-flex justify-content-center gap-2 mt-3">
+        <button class="btn btn-danger" type="submit">Confirmer annulation</button>
+        <a class="btn btn-primary" href="{{ path('sortie_show', {id: sortie.id}) }}">Retour</a>
+    </div>
+{% endblock %}
+
+
+
