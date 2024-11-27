@@ -26,6 +26,8 @@ class Sortie
     private ?string $name = null;
 
     #[ORM\Column]
+    #[Assert\Type("\DateTimeImmutable")]
+    #[Assert\GreaterThanOrEqual(propertyPath: "dateLimitInscription")]
     private ?\DateTimeImmutable $dateStart = null;
 
     #[ORM\Column]
@@ -33,6 +35,7 @@ class Sortie
     private ?int $duration = null;
 
     #[ORM\Column]
+    #[Assert\Type("\DateTimeImmutable")]
     private ?\DateTimeImmutable $dateLimitInscription = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
