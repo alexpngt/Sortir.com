@@ -23,6 +23,17 @@
             <p>Longitude : {{ sortie.lieu.longitude }}</p>
         </div>
     </div>
+
+    {% if sortie.etat.libelle == 'Annulée' and sortie.motifAnnulation is not empty %}
+        <div class="container mt-3">
+            <div class="alter alert-danger">
+                <strong>Motif d'annulation :</strong>
+                <p>{{ sortie.motifAnnulation }}</p>
+            </div>
+        </div>
+    {% endif %}
+
+
     {# Bouton retour et modifier si l'utilisateur est l'auteur #}
     <div class="container col-md-10 d-flex justify-content-center gap-2">
         {% if sortie.organisateur is same as app.user %}
