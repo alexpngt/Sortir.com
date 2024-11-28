@@ -1,0 +1,9 @@
+knp_paginator:
+  convert_exception: true            # throw a 404 exception when an invalid page is requested
+  remove_first_page_param: true      # remove the page query parameter from the first page link
+  default_options:
+    page_name: page                 # page query parameter name
+    distinct: true                  # ensure distinct results, useful when ORM queries are using GROUP BY statements
+    page_out_of_range: fix       # ignore, fix, or throwException when the page is out of range
+  template:
+    pagination: '@KnpPaginator/Pagination/bootstrap_v5_pagination.html.twig'
