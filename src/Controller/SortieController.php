@@ -55,6 +55,13 @@ final class SortieController extends AbstractController
     #[Route('/{id}', name: 'sortie_show', methods: ['GET'])]
     public function show(Sortie $sortie): Response
     {
+        // Vérifier si la sortie a plus de 30 jours
+        $oneMonthAgo = new \DateTimeImmutable('-30 days');
+        if ($sortie->getDateStart() < $oneMonthAgo) {
+            $this->addFlash('warning', 'Cette sortie est trop ancienne pour être consultée.');
+            return $this->redirectToRoute('main_home', [], Response::HTTP_SEE_OTHER);
+        }
+
         return $this->render('sortie/show.html.twig', [
             'sortie' => $sortie,
         ]);
