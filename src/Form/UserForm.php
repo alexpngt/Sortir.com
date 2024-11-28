@@ -29,7 +29,9 @@ class UserForm extends AbstractType
             ->add('username', TextType::class, [
                 'label' => 'Pseudo',
                 'required' => true,
-                'help' => 'Le pseudo doit contenir entre 3 et 180 caractères.',
+                'attr' => [
+                    'placeholder' => 'Doit contenir entre 3 et 180 caractères.',
+                ],
                 'constraints' => [
                     new NotBlank(['message' => 'Le pseudo est obligatoire']),
                     new Length(['min' => 3, 'max' => 180]),
@@ -69,7 +71,9 @@ class UserForm extends AbstractType
                 'label' => 'Mot de passe',
                 'mapped' => false, // Pas lié à l'entité User
                 'required' => true,
-                'help' => 'Le mot de passe doit contenir au moins 6 caractères.',
+                'attr' => [
+                    'placeholder' => 'doit contenir au moins 6 caractères.',
+                ],
                 'constraints' => [
                     new NotBlank(['message' => 'Le mot de passe est obligatoire']),
                     new Length(['min' => 6, 'max' => 4096]),
@@ -79,6 +83,9 @@ class UserForm extends AbstractType
                 'label' => 'Confirmation du mot de passe',
                 'mapped' => false, // Pas lié à l'entité User
                 'required' => true,
+                'attr' => [
+                    'placeholder' => 'doit être identique au champ précédent.',
+                ],
                 'constraints' => [
                     new NotBlank(['message' => 'La confirmation du mot de passe est obligatoire']),
                 ],
