@@ -65,6 +65,10 @@ class SortieRepository extends ServiceEntityRepository
                 ->setParameter('etatPasse', 'Passée');
         }
 
+        $oneMonthAgo = new \DateTimeImmutable('-30 days');
+        $qb->andWhere('s.dateStart >= :oneMonthAgo')
+            ->setParameter('oneMonthAgo', $oneMonthAgo);
+
         return $qb->orderBy('s.dateStart', 'ASC')->getQuery();
     }
 }
