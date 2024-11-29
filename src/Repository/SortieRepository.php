@@ -71,4 +71,15 @@ class SortieRepository extends ServiceEntityRepository
 
         return $qb->orderBy('s.dateStart', 'ASC')->getQuery();
     }
+
+    public function findAllSorties()
+    {
+        $queryBuilder = $this->createQueryBuilder('s')
+            ->leftJoin('s.campusOrganisateur', 'c')
+            ->leftJoin('s.participants', 'p')
+            ->leftJoin('s.etat', 'e')
+            ->addSelect('c', 'p', 'e');
+        $query = $queryBuilder->getQuery();
+        return $query->getResult();
+    }
 }
