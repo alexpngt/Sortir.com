@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Password Reset Email Sent{% endblock %}
+
+{% block header %}
+    <div class="container-fluid d-flex justify-content-center py-4">
+        <img src="{{ asset('img/logo.png') }}" alt="Sortir.com logo" class="object-fit-contain" width="170">
+    </div>
+{% endblock %}
+
+{% block body %}
+<div class="container-fluid d-flex justify-content-center col-12 ">
+  <div class="d-flex justify-content-center row-cols-2">
+    <div class="justify-content-center align-items-center">
+        <div  class="container card mt-2">
+          <p class="mt-2">
+             Si un compte associé à cette adresse e-mail existe,
+              un message a été envoyé contenant un lien permettant de réinitialiser votre mot de passe.</p>
+             <p> Ce lien expirera dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.</p>
+              <p>Si vous ne recevez pas d'e-mail, veuillez vérifier votre dossier spam.</p>
+               <p class="text-center">
+                  <small><a href="{{ path('app_forgot_password_request') }}">Réessayez à nouveau</a></small>
+                </p>
+                 <div>
+                    <small>Retour à la page de<a class="ms-2 " href="{{ path('main_home') }}">Connexion</a></small>
+                     </div>
+                       </div>
+{% endblock %}
+        {% block footer %}
+           <footer class="fixed-bottom">
+              <p class="text-center">{{ "now"|date("Y")}} - ENI Sortir.com</p>
+           </footer>
+       {% endblock %}
